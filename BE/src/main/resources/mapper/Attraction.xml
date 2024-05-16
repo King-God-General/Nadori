@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+  
+  <mapper namespace="com.ssafy.nadori.model.dao.AttractionDAO">
+  	
+<resultMap type="Attraction" id="AttractionResultMap">
+    <id column="content_Id" property="contentId"/>
+    <result column="overview" property="overview"/>
+    <result column="cat1" property="cat1"/>
+    <result column="cat2" property="cat2"/>
+    <result column="cat3" property="cat3"/>
+    <result column="title" property="title"/>
+    <result column="addr1" property="addr1"/>
+    <result column="addr2" property="addr2"/>
+    <result column="zipcode" property="zipcode"/>
+    <result column="content_type_id" property="contentTypeId"/>
+    <result column="first_image" property="firstImage"/>
+    <result column="first_image2" property="firstImage2"/>
+    <result column="sido_code" property="sidoCode"/>
+    <result column="gugun_code" property="gugunCode"/>
+    <result column="latitude" property="latitude"/>
+    <result column="longitude" property="longitude"/>
+</resultMap>
+  	
+  	  <sql id="basicSelectAttractionSQL">
+  		select content_id,overview,cat1,cat2,cat3,title,addr1,addr2,zipcode,content_type_id,first_image,first_image,sido_code,gugun_code,latitude,longitude from attraction
+  	</sql>
+  	
+  	<select id="selectAll" resultMap="AttractionResultMap">
+  		<include refid="basicSelectAttractionSQL"></include>
+  	</select>
+  	
+<select id="selectByMultiCondition" resultMap="AttractionResultMap" parameterType="java.util.Map">
+    <include refid="basicSelectAttractionSQL"></include>
+    <where>
+        <if test="sidoCode != null and !sidoCode.isEmpty()">
+            sido_code = #{sidoCode}
+        </if>
+        <if test="gugunCode != null and !gugunCode.isEmpty()">
+            and gugun_code = #{gugunCode}
+        </if>
+        <if test="contentTypeId != null and !contentTypeId.isEmpty()">
+            and content_type_id = #{contentTypeId}
+        </if>
+    </where>
+</select>
+	
+	<insert id="insertAttraction" parameterType="java.util.List">
+	    insert into attraction (contentId, title, contentTypeId, firstImage, firstImage2, areaCode, sigunguCode, mapX, mapY, cat1, cat2, cat3) values
+	    <foreach collection="list" item="element" open="(" separator="),("  close=")">
+	        #{element.contentId}, 
+	        #{element.title}, 
+	        #{element.contentTypeId}, 
+	        #{element.firstImage}, 
+	        #{element.firstImage2}, 
+	        #{element.areaCode}, 
+	        #{element.sigunguCode}, 
+	        #{element.mapX}, 
+	        #{element.mapY}, 
+	        #{element.cat1}, 
+	        #{element.cat2}, 
+	        #{element.cat3}
+	    </foreach>
+	</insert>
+	
+</mapper>
