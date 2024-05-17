@@ -31,7 +31,7 @@ import { VueToggles } from "vue-toggles";
 
 const curDay = ref(1);
 const curPlan = ref([
-{
+    {
         dayNum: 1,
         contents: [
             { memo: "1일차 테스트 메모" },
@@ -85,13 +85,13 @@ const curPlan = ref([
     },
     {
         dayNum: 3,
-        contents: [ ]
+        contents: []
     }
 ]
-    
+
 );
 
-const dayCnt = ref([1,2,3]);
+const dayCnt = ref([1, 2, 3]);
 const curDayNum = ref(1);
 const isRelease = ref(false)
 
@@ -104,60 +104,54 @@ const changeCurDayNum = (n) => {
 </script>
 
 <template>
-    
+
     <div class="page">
 
+        
+
         <div class="dayNavContainer">
-            <input class="dayButton" type="button" 
-            v-for="day in dayCnt" 
-            :key="day" 
-            :value="'Day '+day" 
-            @click="changeCurDayNum(day)"
-            :class="{ 'selectedDayButton': curDayNum === day }">
+            <input class="dayButton" type="button" v-for="day in dayCnt" :key="day" :value="'Day ' + day"
+                @click="changeCurDayNum(day)" :class="{ 'selectedDayButton': curDayNum === day }">
         </div>
 
         <div class="contentsContainer">
-                <contentCard></contentCard>
 
-                <button class="btn addMemoButton" @click="">
-                    <svg xmlns="http://www.w3.org/2000/svg" id="Layer_1" data-name="Layer 1" viewBox="0 0 24 24" width="25" height="30">
-                    <path d="m20.5,0H3.5C1.57,0,0,1.57,0,3.5v20.5h18.381l5.619-5.664V3.5c0-1.93-1.57-3.5-3.5-3.5ZM3,3.5c0-.275.224-.5.5-.5h17c.276,0,.5.225.5.5v12.5h-5v5H3V3.5Zm7.5,12.5v-2.5h-2.5v-3h2.5v-2.5h3v2.5h2.5v3h-2.5v2.5h-3Z"/></svg>
-                </button>
+            <contentCard></contentCard>
+
+            <button class="btn addMemoButton" @click="">
+                <svg xmlns="http://www.w3.org/2000/svg" id="Layer_1" data-name="Layer 1" viewBox="0 0 24 24" width="24"
+                    height="24">
+                    <path
+                        d="m20.5,0H3.5C1.57,0,0,1.57,0,3.5v20.5h18.381l5.619-5.664V3.5c0-1.93-1.57-3.5-3.5-3.5ZM3,3.5c0-.275.224-.5.5-.5h17c.276,0,.5.225.5.5v12.5h-5v5H3V3.5Zm7.5,12.5v-2.5h-2.5v-3h2.5v-2.5h3v2.5h2.5v3h-2.5v2.5h-3Z" />
+                </svg>
+            </button>
         </div>
 
         <div class="memoContainer">
             <label for="memo">메모</label>
-        <textarea class="form-control" name="memo" id="memo" cols="10" rows="5"></textarea>
+            <textarea class="form-control" name="memo" id="memo" cols="10" rows="5"></textarea>
         </div>
-        
+
         <div class="buttonNavContainer">
             <button class="btn" @click="">저장하기</button>
-            
-            
+
+
             <div class="toggle">
-                다른 사람들과 공유하시겠어요?
-                <VueToggles 
-                :v-model="isRelease" 
-                :height="30" 
-                :width="70"
-                checkedText="On"
-                uncheckedText="Off"
-                fontSize="18"
-                checkedBg="#162F65"
-                uncheckedBg="grey"></VueToggles>
+                <div class="toggleTitle">다른 사람들과 공유하시겠어요?</div>
+                <VueToggles :v-model="isRelease" :height="30" :width="70" checkedText="On" uncheckedText="Off"
+                    fontSize="18" checkedBg="#162F65" uncheckedBg="grey"></VueToggles>
             </div>
         </div>
 
 
-        
+
     </div>
 </template>
 
 <style scoped>
-
 .page {}
 
-.dayNavContainer{
+.dayNavContainer {
     margin: 20px 0px 0px 20px;
 }
 
@@ -189,7 +183,7 @@ const changeCurDayNum = (n) => {
     font-size: 1.1em;
     color: #3361AC;
     background-color: white;
-    
+
     border-radius: 10px 10px 0px 0PX;
     padding: 10px;
     font-weight: bolder;
@@ -197,12 +191,16 @@ const changeCurDayNum = (n) => {
 }
 
 button {
-  background-color: #3361AC;
-  color: rgba(255, 255, 255);
-  font-weight: bolder;
-  margin-top: 5px;
-  margin-right: 5px;
-  font-family: 'jua';
+    background-color: #3361AC;
+    color: rgba(255, 255, 255);
+    font-weight: bolder;
+    margin-top: 5px;
+    margin-right: 5px;
+}
+
+.toggleTitle {
+    margin-top: 2px;
+    margin-right: 15px;
 }
 
 .selectedDayButton {
@@ -217,21 +215,22 @@ button {
 }
 
 .city-buttons {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-  }
-  .city-buttons li {
-      cursor: pointer;
-  }
-  .isSelected {
-      background: #333;
-      color: #fff
-  }
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+}
 
-  .toggle {
+.city-buttons li {
+    cursor: pointer;
+}
+
+.isSelected {
+    background: #333;
+    color: #fff
+}
+
+.toggle {
     display: flex;
     margin-left: 20px;
     margin-top: 5px;
-  }
-
+}
 </style>

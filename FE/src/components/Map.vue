@@ -3,25 +3,16 @@ import { NaverMap, NaverMarker } from 'vue3-naver-maps'
 import { ref, onMounted } from 'vue';
 import attractionAPI from "@/apis/attraction"
 
+const mapRef = ref(null)
+const morphOption = {
+  duration: 300,
+  easing: 'easeInCubic',
+}
 const mapOptions = {
   latitude: 37.51347, // 지도 중앙 위도
   longitude: 127.041722, // 지도 중앙 경도
   zoom: 20,
 }
-
-onMounted(() => {
-      if (navigator.geolocation) {
-        navigator.geolocation.getCurrentPosition(
-          position => {
-            mapOptions.latitude=position.coords.latitude;
-            mapOptions.longitude=position.coords.longitude;
-          },
-          error => {
-            console.log(error);
-          }
-        );
-      } 
-});
 
 const sidoList = [
   { name: '서울', value: 1 },
@@ -333,6 +324,22 @@ const selectedSidoCode = ref(0);
 const selectedGugunCode = ref(0);
 const selectedContentTypeId = ref(0);
 
+const selectAttraction = ref(null);
+
+onMounted(() => {
+      if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(
+          position => {
+            mapOptions.latitude=position.coords.latitude;
+            mapOptions.longitude=position.coords.longitude;
+          },
+          error => {
+            console.log(error);
+          }
+        );
+      } 
+});
+
 const updateSelectedGugunList = ()=>{
   selectedGugunList.value=gugunList[selectedSidoCode.value];
 }
@@ -342,12 +349,31 @@ attractionAPI.getConditionalData(
   selectedSidoCode.value,selectedGugunCode.value,selectedContentTypeId.value,
 (response)=>{
   searchResult.value=response.data
-  console.log(searchResult.value)
+  console.log("관광지 조회에 성공했습니다.")
+  moveMap()
 }, 
 ()=>console.log("관광지 조회에 실패했습니다."))
 }
 
-const selectAttraction = ref(null);
+const onLoadMap = (map) => {
+  mapRef.value = map
+}
+
+const moveMap = () => {
+  console.log('이동 시작')
+  const bounds = searchResult.value.reduce((acc, item) => {
+    if (!acc) {
+      return new window.naver.maps.LatLngBounds(
+        new window.naver.maps.LatLng(item.latitude, item.longitude),
+        new window.naver.maps.LatLng(item.latitude, item.longitude),
+      )
+    }
+    acc.extend(new window.naver.maps.LatLng(item.latitude, item.longitude))
+    return acc
+  }, null)
+
+  mapRef.value.panToBounds(bounds, morphOption, { top: 60, left: 60, right: 60, bottom: 60 })    
+}
 
 const selectMarker = (item) => {
   selectAttraction.value=item;
@@ -363,7 +389,7 @@ const addToPlan = () => {
   <div class="page">
 
     <div class="mapContainer">
-      <naver-map style="width: 2000px; height: 1300px" :map-options="mapOptions">
+      <naver-map style="width: 1600px; height: 1300px" :map-options="mapOptions" @on-load="onLoadMap($event)">
         <div v-for="item in searchResult" :key="item.contentId">
           <naver-marker @click="selectMarker(item)" :latitude="item.latitude" :longitude="item.longitude"/>
         </div>
