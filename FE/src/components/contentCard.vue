@@ -6,8 +6,8 @@ const content = item.item.content;
 </script>
 
 <template>
-    <div v-if="type=='memo'" class="memo planCard">
-        <textarea class="form-control" name="memo" id="memo" cols="auto" rows="auto" :value="content" read></textarea>
+    <div v-if="type=='memo'" class="planCard">
+        <textarea class="form-control memo" name="memo" id="memo" cols="auto" rows="auto" :value="content" read></textarea>
     </div>
     <div v-else-if="type=='attraction'" class="attraction planCard">
         <img :src="content.firstImage=='' ? 'src/assets/no_image.jpg' : content.firstImage">
@@ -23,20 +23,16 @@ const content = item.item.content;
 .planCard {
     min-width: 441px;
     width: 100%;
-    padding: 20px;
-    margin-bottom: 10px;
+    margin: 5px;
     border-radius: 5px;
-
     display: flex;
     flex-direction: row;
     word-wrap: break-word;
 }
 
 .memo {
-    background-color: white;
-    text-align: center;
-    
-    overflow: auto;
+    border: none;
+    resize: none;
 }
 
 .attraction {
