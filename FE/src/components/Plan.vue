@@ -3,7 +3,6 @@ import { ref } from "vue";
 import VueDatePicker from '@vuepic/vue-datepicker';
 import '@vuepic/vue-datepicker/dist/main.css'
 
-
 const formatDate = (date) => {
   const year = date.getFullYear();
   const month = date.getMonth() + 1;

@@ -360,7 +360,6 @@ const onLoadMap = (map) => {
 }
 
 const moveMap = () => {
-  console.log('이동 시작')
   const bounds = searchResult.value.reduce((acc, item) => {
     if (!acc) {
       return new window.naver.maps.LatLngBounds(
@@ -379,9 +378,20 @@ const selectMarker = (item) => {
   selectAttraction.value=item;
 };
 
-const addToPlan = () => {
+import { useUserPlanStore } from "@/stores/userPlan";
+import { storeToRefs } from "pinia";
+const userPlanStore = useUserPlanStore() 
+const { curPlan, curDayNum } = storeToRefs(userPlanStore)
 
+const addAttraction = () => {
+  console.log("관광지 추가 시도: "+ selectAttraction.value)
+    curPlan.value[curDayNum.value].plan.push({
+      type: 'attraction',
+      content: selectAttraction.value
+    })
+    console.log("계획 현황 확인: "+ JSON.stringify(curPlan.value[curDayNum.value], null, 2))
 }
+
 </script>
 
 <template>
@@ -390,7 +400,7 @@ const addToPlan = () => {
 
     <div class="mapContainer">
       <naver-map style="width: 1600px; height: 1300px" :map-options="mapOptions" @on-load="onLoadMap($event)">
-        <div v-for="item in searchResult" :key="item.contentId">
+        <div v-for="item in searchResult" :key="item.attractionId">
           <naver-marker @click="selectMarker(item)" :latitude="item.latitude" :longitude="item.longitude"/>
         </div>
       </naver-map>
@@ -423,7 +433,7 @@ const addToPlan = () => {
           <p class="address">{{ selectAttraction.addr1}}</p>
 
           <div class="buttonContainer">
-            <button type="button" class="svgButton" >
+              <button type="button" class="svgButton" @click="addAttraction">
             <svg xmlns="http://www.w3.org/2000/svg" id="Layer_1" data-name="Layer 1" viewBox="0 0 24 24" width="25" height="25">
               <path d="M10.5,16.5h-2.5v-3h2.5v-2.5h3v2.5h2.5v3h-2.5v2.5h-3v-2.5ZM24,5.5V24H0V5.5c0-1.93,1.57-3.5,3.5-3.5h2.5V0h3V2h6V0h3V2h2.5c1.93,0,3.5,1.57,3.5,3.5Zm-3,3.5H3v12H21V9Z"/>
             </svg>

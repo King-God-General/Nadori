@@ -8,11 +8,13 @@ import 'bootstrap/dist/css/bootstrap.min.css'
 import 'bootstrap'
 import VueDatePicker from '@vuepic/vue-datepicker';
 import '@vuepic/vue-datepicker/dist/main.css'
+import { createPinia } from 'pinia'
 
 const app = createApp(App)
 
 app.component('VueDatePicker', VueDatePicker);
 
+app.use(createPinia());
 app.use(router)
 app.use(createNaverMap, {
   clientId: 'pbhqhpu7po', // Required
