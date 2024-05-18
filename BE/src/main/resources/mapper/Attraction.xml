@@ -6,7 +6,7 @@
   <mapper namespace="com.ssafy.nadori.model.dao.AttractionDAO">
   	
 <resultMap type="Attraction" id="AttractionResultMap">
-    <id column="content_Id" property="contentId"/>
+    <id column="attraction_id" property="attractionId"/>
     <result column="overview" property="overview"/>
     <result column="cat1" property="cat1"/>
     <result column="cat2" property="cat2"/>
@@ -25,7 +25,7 @@
 </resultMap>
   	
   	  <sql id="basicSelectAttractionSQL">
-  		select content_id,overview,cat1,cat2,cat3,title,addr1,addr2,zipcode,content_type_id,first_image,first_image,sido_code,gugun_code,latitude,longitude from attraction
+  		select attraction_id,overview,cat1,cat2,cat3,title,addr1,addr2,zipcode,content_type_id,first_image,first_image2,sido_code,gugun_code,latitude,longitude from attraction
   	</sql>
   	
   	<select id="selectAll" resultMap="AttractionResultMap">
@@ -47,22 +47,6 @@
     </where>
 </select>
 	
-	<insert id="insertAttraction" parameterType="java.util.List">
-	    insert into attraction (contentId, title, contentTypeId, firstImage, firstImage2, areaCode, sigunguCode, mapX, mapY, cat1, cat2, cat3) values
-	    <foreach collection="list" item="element" open="(" separator="),("  close=")">
-	        #{element.contentId}, 
-	        #{element.title}, 
-	        #{element.contentTypeId}, 
-	        #{element.firstImage}, 
-	        #{element.firstImage2}, 
-	        #{element.areaCode}, 
-	        #{element.sigunguCode}, 
-	        #{element.mapX}, 
-	        #{element.mapY}, 
-	        #{element.cat1}, 
-	        #{element.cat2}, 
-	        #{element.cat3}
-	    </foreach>
-	</insert>
+	
 	
 </mapper>

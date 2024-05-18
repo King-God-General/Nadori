@@ -5,6 +5,7 @@ import java.util.List;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.ssafy.nadori.model.dao.ContentDAO;
 import com.ssafy.nadori.model.dao.PlanDAO;
 import com.ssafy.nadori.model.dto.Plan;
 
@@ -13,8 +14,11 @@ import com.ssafy.nadori.model.dto.Plan;
 public class PlanServiceImpl implements PlanService{
 
 	private PlanDAO planDao;
-	public PlanServiceImpl(PlanDAO planDao) {
+	private ContentDAO contentDAO;
+	
+	public PlanServiceImpl(PlanDAO planDao, ContentDAO contentDAO) {
 		this.planDao = planDao;
+		this.contentDAO = contentDAO;
 	}
 	
 	@Override
@@ -28,26 +32,25 @@ public class PlanServiceImpl implements PlanService{
 	}
 
 	@Override
-	public boolean removePlan(int[] planId) throws Exception {
+	public boolean removePlan(int planId) throws Exception {
+		contentDAO.deleteAllContents(planId);
 		return planDao.deletePlan(planId)>0;
 	}
 
-	@Transactional(readOnly = true)
 	@Override
 	public List<Plan> getPlans() throws Exception {
+		System.out.println("service");
 		return planDao.selectPlans();
 	}
 
-	@Transactional(readOnly = true)
 	@Override
-	public List<Plan> getPlans(String title) throws Exception {
-		return planDao.selectPlansByTitle(title);
+	public List<Plan> getPlansByKeyword(String keyword) throws Exception {
+		return planDao.selectPlansByKeyword(keyword);
 	}
 
-	@Transactional(readOnly = true)
 	@Override
-	public Plan getPlan(int planId) throws Exception {
-		return planDao.selectPlan(planId);
+	public List<Plan> getPlansByUsername(String username) throws Exception {
+		return planDao.selectPlansByUsername(username);
 	}
 
 	

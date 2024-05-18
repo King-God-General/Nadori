@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+  
+  <mapper namespace="com.ssafy.nadori.model.dao.PlanDAO">
+  	
+	  <resultMap type="Member" id="MemberResultMap">
+	    <id column="member_id" property="memberId"/>
+	    <result column="username" property="username"/>
+	</resultMap>
+  	
+	<resultMap type="Plan" id="PlanResultMap">
+	    <id column="plan_id" property="planId"/>
+	    <result column="title" property="title"/>
+	    <result column="description" property="description"/>
+	    <result column="startDate" property="startDate"/>
+	    <result column="endDate" property="endDate"/>
+		<association property="writer" resultMap="MemberResultMap"/>	
+	</resultMap>
+  	
+  	<insert id="insertPlan" parameterType="Plan">
+  		insert table plan(plan_id, member_id, title, description, startDate, endDate) 
+  		values(#{plan_id}, #{member_id}, #{title}, #{description}, #{startDate}, #{endDate});
+  	</insert>
+  	
+  	<update id="updatePlan">
+  		update plan 
+  		set title=#{title}, description=#{description}, startDate=#{startDate}, endDate=#{endDate}
+  		where plan_id=#{planId}
+  	</update>
+  	
+  	<delete id="deletePlan">
+  		delete from plan where plan_id=#{planId}
+  	</delete>
+  	
+  	<select id="selectPlans" resultMap="PlanResultMap">
+  		select plan_id, title, description, startDate, endDate, member_id, username 
+  		from plan join member using (member_id)
+  	</select>
+  	
+  	<select id="selectPlansByKeyword" parameterType="String" resultMap="PlanResultMap">
+  		select plan_id, title, description, startDate, endDate, member_id, username from plan join member using (member_id) where title LIKE CONCAT('%',#{keyword},'%')
+  	</select>
+  	
+  	<select id="selectPlansByUsername" parameterType="String" resultMap="PlanResultMap">
+  		select plan_id, title, description, startDate, endDate, member_id, username from plan join member using (member_id) where username=#{username}
+  	</select>
+  	
+</mapper>

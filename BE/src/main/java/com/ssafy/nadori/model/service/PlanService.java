@@ -13,14 +13,14 @@ public interface PlanService {
 	boolean modifyPlan(Plan plan) throws Exception;
 	
 	//삭제
-	boolean removePlan(int[] planId) throws Exception;
+	boolean removePlan(int planId) throws Exception;
 	
 	//조회
 	List<Plan> getPlans() throws Exception;
 	
-	//조회 - 제목 포함 조회
-	List<Plan> getPlans(String title) throws Exception;
+	//조회 - 키워드
+	List<Plan> getPlansByKeyword(String keyword) throws Exception;
 	
-	//조회 - planId
-	Plan getPlan(int planId) throws Exception;
+	//조회 - 유저네임
+	List<Plan> getPlansByUsername(String username) throws Exception;
 }

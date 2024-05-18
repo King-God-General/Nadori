@@ -9,16 +9,14 @@ import lombok.ToString;
 @Setter
 @ToString
 public class Member {
-	@NonNull
-	String email; //email("sample@sample.com")
+	private int memberId;
 	
-	@NonNull
-	String password;
+	private String email; //email("sample@sample.com")
 	
-	@NonNull
-	String nickname; //nickname("홍길동")
+	private String password;
 	
-	String gender; //gender("female", "male")
+	private String username; //username("홍길동")
 	
-	String birthdate; //birthyear(2002)+birthday(1130)
+	private boolean gender; //gender("female", "male")
+	private String birthdate; //birthyear(2002)+birthday(1130)
 }

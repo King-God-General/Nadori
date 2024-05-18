@@ -13,19 +13,15 @@ import lombok.ToString;
 @Setter
 @Data
 public class Plan {
-	@NonNull
 	private int planId;
 	
-	@NonNull
+	private Member writer;
+	
 	private String title;
 	
 	private String description;
 	
-	@NonNull
 	private LocalDate startDate;
 	
-	@NonNull
 	private LocalDate endDate;
-	
-	private List<Content> contents;
 }

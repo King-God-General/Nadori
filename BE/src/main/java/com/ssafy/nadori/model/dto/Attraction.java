@@ -6,7 +6,7 @@ import lombok.Setter;
 @Setter
 @Getter
 public class Attraction {
-	String contentId;
+	String attractionId;
 	String overview;
 	String cat1;
 	String cat2;

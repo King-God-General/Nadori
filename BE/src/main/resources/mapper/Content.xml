@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+  
+  <mapper namespace="com.ssafy.nadori.model.dao.ContentDAO">
+  	
+  	<!-- 
+  	<resultMap type="Attraction" id="AttractionResultMap">
+	    <id column="attraction_id" property="attractionId"/>
+	    <result column="overview" property="overview"/>
+	    <result column="cat1" property="cat1"/>
+	    <result column="cat2" property="cat2"/>
+	    <result column="cat3" property="cat3"/>
+	    <result column="title" property="title"/>
+	    <result column="addr1" property="addr1"/>
+	    <result column="addr2" property="addr2"/>
+	    <result column="zipcode" property="zipcode"/>
+	    <result column="content_type_id" property="contentTypeId"/>
+	    <result column="first_image" property="firstImage"/>
+	    <result column="first_image2" property="firstImage2"/>
+	    <result column="sido_code" property="sidoCode"/>
+	    <result column="gugun_code" property="gugunCode"/>
+	    <result column="latitude" property="latitude"/>
+	    <result column="longitude" property="longitude"/>
+	</resultMap>
+  	 -->
+  	
+  	<resultMap type="Attraction" id="AttractionResultMap">
+	    <id column="attraction_id" property="attractionId"/>
+	    <result column="title" property="title"/>
+	    <result column="addr1" property="addr1"/>
+	    <result column="addr2" property="addr2"/>
+	    <result column="content_type_id" property="contentTypeId"/>
+	    <result column="first_image" property="firstImage"/>
+	    <result column="first_image2" property="firstImage2"/>
+	    <result column="latitude" property="latitude"/>
+	    <result column="longitude" property="longitude"/>
+	</resultMap>
+	  	
+	<resultMap type="Content" id="ContentResultMap">
+	    <id column="content_id" property="contentId"/>
+	    <result column="dayNum" property="dayNum"/>
+	    <result column="contentNum" property="contentNum"/>
+	    <result column="memo" property="memo"/>
+		<association property="attraction" resultMap="AttractionResultMap"/>
+	</resultMap>
+	
+	<insert id="insertContent" parameterType="Content">
+		insert into content(content_id,dayNum,contentNum,memo,attraction_id) 
+		values(#{contentId},#{dayNum},#{contentNum},#{memo},#{attraction.attractionId})
+	</insert>
+	
+	<delete id="deleteAllContents" parameterType="int">
+		delete from content where plan_id=#{planId}
+	</delete>
+	
+	<!--attraction_id,overview,cat1,cat2,cat3,title,addr1,addr2,zipcode,content_type_id,first_image,first_image2,sido_code,gugun_code,latitude,longitude-->
+	
+	<select id="selectContentsByPlanId" parameterType="int"  resultMap="ContentResultMap">
+		select content_id, dayNum, contentNum, memo, 
+		attraction_id,title,addr1,addr2,content_type_id,first_image,first_image2,latitude,longitude
+		from content join attraction
+		using(attraction_id)
+		where plan_id=#{planId}
+	</select>
+	
+	<select id="selectContentsByDayNum" parameterType="java.util.Map" resultMap="ContentResultMap">
+		select content_id, dayNum, contentNum, memo, 
+		attraction_id,title,addr1,addr2,content_type_id,first_image,first_image2,latitude,longitude
+		from content join attraction
+		using(attraction_id)
+		where plan_id=#{planId} and dayNum=#{dayNum}
+	</select>
+  	
+</mapper>

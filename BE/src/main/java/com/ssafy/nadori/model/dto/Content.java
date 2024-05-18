@@ -9,18 +9,14 @@ import lombok.ToString;
 @Setter
 @ToString
 public class Content {
-
 	@NonNull
 	private int contentId;
 	
 	@NonNull
 	private int dayNum;
-
 	@NonNull
-	private int order;
+	private int contentNum;
 	
 	private String memo;
-	
-	@NonNull
 	private Attraction attraction;
 }
