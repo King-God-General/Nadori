@@ -8,6 +8,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.ssafy.nadori.model.dao.ContentDAO;
 import com.ssafy.nadori.model.dao.PlanDAO;
 import com.ssafy.nadori.model.dto.Plan;
+import com.ssafy.nadori.model.dto.RequestPlan;
 
 @Transactional
 @Service
@@ -22,24 +23,26 @@ public class PlanServiceImpl implements PlanService{
 	}
 	
 	@Override
-	public boolean registerPlan(Plan plan) throws Exception {
-		return planDao.insertPlan(plan)>0;
+	public int registerPlan(RequestPlan plan) throws Exception {
+		planDao.insertPlan(plan);
+		return plan.getPlanId();
 	}
 
 	@Override
-	public boolean modifyPlan(Plan plan) throws Exception {
-		return planDao.updatePlan(plan)>0;
+	public int modifyPlan(RequestPlan plan) throws Exception {
+		return planDao.updatePlan(plan);
 	}
 
 	@Override
-	public boolean removePlan(int planId) throws Exception {
-		contentDAO.deleteAllContents(planId);
-		return planDao.deletePlan(planId)>0;
+	public int removePlan(int planId) throws Exception {
+		int removedContents=contentDAO.deleteAllContents(planId);
+		int removedPlan=planDao.deletePlan(planId);
+		System.out.println(removedPlan+"개의 plan에 대한 "+removedContents+"개의 content가 삭제되었습니다.");
+		return removedPlan;
 	}
 
 	@Override
 	public List<Plan> getPlans() throws Exception {
-		System.out.println("service");
 		return planDao.selectPlans();
 	}
 

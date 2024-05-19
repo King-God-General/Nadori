@@ -5,14 +5,15 @@ import java.util.List;
 import org.springframework.stereotype.Repository;
 
 import com.ssafy.nadori.model.dto.Plan;
+import com.ssafy.nadori.model.dto.RequestPlan;
 
 @Repository
 public interface PlanDAO {
 		//등록
-		int insertPlan(Plan plan); 
+		int insertPlan(RequestPlan plan); 
 		
 		//수정
-		int updatePlan(Plan plan);
+		int updatePlan(RequestPlan plan);
 		
 		//삭제
 		int deletePlan(int planId);
