@@ -34,7 +34,7 @@ drop table if exists member;
 
 -- member 테이블 생성
 create table member (
-    member_id int primary key,
+    member_id int primary key auto_increment,
     email varchar(20) not null,
     password varchar(20) not null,
     username varchar(20) not null,
@@ -44,7 +44,7 @@ create table member (
 
 -- plan 테이블 생성
 create table plan (
-    plan_id int primary key,
+    plan_id int primary key auto_increment,
     member_id int not null,
     title varchar(100) not null,
     description varchar(500),
@@ -55,7 +55,7 @@ create table plan (
 
 -- content 테이블 생성
 create table content (
-    content_id int primary key,
+    content_id int primary key auto_increment,
     plan_id int not null,
     dayNum int not null,
     contentNum int not null,
