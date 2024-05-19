@@ -345,7 +345,7 @@ const updateSelectedGugunList = ()=>{
 }
 
 const search = ()=>{
-attractionAPI.getConditionalData(
+  attractionAPI.getConditionalData(
   selectedSidoCode.value,selectedGugunCode.value,selectedContentTypeId.value,
 (response)=>{
   searchResult.value=response.data
@@ -389,7 +389,6 @@ const addAttraction = () => {
       type: 'attraction',
       content: selectAttraction.value
     })
-    console.log("계획 현황 확인: "+ JSON.stringify(curPlan.value[curDayNum.value], null, 2))
 }
 
 </script>
@@ -496,7 +495,7 @@ const addAttraction = () => {
   margin: 10px 0px 15px 0px;
 }
 .selectAttractionDataContainer{
-  background-color: #E8AF30;
+  background: linear-gradient(to bottom left, #e1eec3, #f05053);
   padding: 20px;
   border-radius: 0px 0px 25px 25px;
 }
@@ -538,7 +537,8 @@ const addAttraction = () => {
 }
 
 .btn {
-  background-color: #E8AF30;
+  background: linear-gradient(to bottom left, #e1eec3, #f05053);
+  border:none;
   color: rgba(255, 255, 255);
   font-weight: bolder;
   width: 300px;

@@ -1,46 +1,50 @@
 <script setup>
-import { ref } from "vue";
-import VueDatePicker from '@vuepic/vue-datepicker';
+import { ref, reactive, computed, watch } from "vue";
 import '@vuepic/vue-datepicker/dist/main.css'
-
+import VueDatePicker from '@vuepic/vue-datepicker';
 import contentCard from "@/components/contentCard.vue";
 import { VueToggles } from "vue-toggles";
 
 import { useUserPlanStore } from "@/stores/userPlan";
 import { storeToRefs } from "pinia";
 
+import planAPI from "@/apis/plan";
+
+const userPlanStore = useUserPlanStore()
+const { curPlan, curDayNum } = storeToRefs(userPlanStore)
+
+const step = ref([true, false, false])
+const isRelease = ref(false);
+const onMemoEditor = ref(false)
+
+//로그인 기능 만든 다음에 수정해야 함!
+const plan= reactive({planId: null, memberId:2, title:'', description:'', startDate:'', endDate:''})
+const memoContent = ref('')
+
+const dayCnt = computed(() => {
+  const start = new Date(plan.startDate);
+    const end = new Date(plan.endDate);
+    const diffTime = Math.abs(end - start);
+    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24)) + 1;
+    return Array.from({ length: diffDays }, (_, i) => i + 1);
+});
+
 const formatDate = (date) => {
   const year = date.getFullYear();
   const month = date.getMonth() + 1;
   const day = date.getDate();
 
-  // 날짜 앞에 0을 붙여야 하는 경우
   if (month || day < 10) {
     const zeroDay = ('00' + day).slice(-2);
     const zeroMonth = ('00' + month).slice(-2);
-
-    return `${year}.${zeroMonth}.${zeroDay}`;
+    return `${year}-${zeroMonth}-${zeroDay}`;
   } else {
-
-    return `${year}.${month}.${day}`;
+    return `${year}-${month}-${day}`;
   }
 }
 
-const startDate = ref();
-const endDate = ref();
-
-
-const userPlanStore = useUserPlanStore()
-const { curPlan, curDayNum } = storeToRefs(userPlanStore)
-
-const dayCnt = ref([1, 2, 3]);
-const isRelease = ref(false);
-const onMemoEditor = ref(false)
-const memoContent = ref('')
-
 const changeCurDayNum = (n) => {
   curDayNum.value = n;
-  console.log(curDayNum.value);
 }
 
 const addMemo = () => {
@@ -49,13 +53,64 @@ const addMemo = () => {
       type: 'memo',
       content: memoContent.value
     })
-
     memoContent.value = '';
   }
 }
 
-const secondStep = ref(false)
-const planStep = ref(false)
+const savePlan = () => {
+  transformCurPlan();
+  
+}
+
+const transformCurPlan = () => {
+  const result = [];
+  Object.keys(curPlan.value).forEach(dayNum => {
+    curPlan.value[dayNum].plan.forEach((item, index) => {
+      const transformedItem = {
+        contentId: null,
+        dayNum: parseInt(dayNum),
+        contentNum: index + 1,
+        memo: item.type === 'memo' ? item.content : null,
+        attraction: item.type === 'attraction' ? item.content : null
+      };
+      result.push(transformedItem);
+    });
+  });
+}
+
+const checkDateInput = () => {
+  if (plan.startDate && plan.endDate){
+    plan.startDate=formatDate(plan.startDate);
+    plan.endDate=formatDate(plan.endDate);
+    step.value[0]=false;
+    step.value[1]=true;
+  }
+}
+const checkTextInput = () => {
+  if (plan.title && plan.description) {
+    planAPI.postPlan(
+      plan,
+      (response)=>{
+        console.log("플랜 저장을 성공했습니다.: "+response.data);
+        plan.planId=response.data;
+        step.value[1]=false;
+        step.value[2]=true;
+      },
+      ()=>{
+        console.log("플랜 저장을 실패했습니다.");
+      }
+    )
+  }
+}
+
+watch(dayCnt, (newDayCnt) => {
+  const newCurPlan = {};
+  newDayCnt.forEach((day) => {
+    newCurPlan[day] = { plan: [] };
+  });
+  curPlan.value = newCurPlan;
+});
+
 </script>
 
 <template>
@@ -71,8 +126,8 @@ const planStep = ref(false)
         </svg>
       </div>
     </div>
-    
-    <div class="rowContainer">
+
+    <div class="rowContainer" v-if="step[0]">
 
       <div class="contentContainer" id="forDate">
 
@@ -82,16 +137,16 @@ const planStep = ref(false)
 
         <div class="inputContainer">
           <div class="singleDate">
-            <VueDatePicker v-model="startDate" locale="ko" :format="formatDate" :enable-time-picker="false"
+            <VueDatePicker v-model="plan.startDate" locale="ko" :format="formatDate" :enable-time-picker="false"
               placeholder="여행을 떠나는 날" auto-apply />
           </div>
           <div class="singleDate">
-            <VueDatePicker v-model="endDate" locale="ko" :format="formatDate" :enable-time-picker="false"
+            <VueDatePicker v-model="plan.endDate" locale="ko" :format="formatDate" :enable-time-picker="false"
               placeholder="집으로 돌아오는 날" auto-apply />
           </div>
         </div>
 
-        <button class="stepButton btn" @click="secondStep = !secondStep">
+        <button class="stepButton btn" @click="checkDateInput">
           <svg xmlns="http://www.w3.org/2000/svg" id="Bold" viewBox="0 0 24 24" width="30" height="30">
             <path
               d="M17.061,9.525,13.475,5.939a1.5,1.5,0,0,0-2.121,2.122L13.793,10.5H5a1.5,1.5,0,0,0,0,3h8.793l-2.439,2.439a1.5,1.5,0,0,0,2.121,2.122l3.586-3.586A3.505,3.505,0,0,0,17.061,9.525Z" />
@@ -101,7 +156,7 @@ const planStep = ref(false)
 
     </div>
 
-    <div class="rowContainer" v-if="secondStep">
+    <div class="rowContainer" v-if="step[1]">
 
       <div class="contentContainer" id="forText">
 
@@ -111,15 +166,14 @@ const planStep = ref(false)
 
         <div class="inputContainer">
           <div class="singleText">
-            <input type="text" class="form-control" id="title" name="title">
+            <input type="text" class="form-control" id="title" name="title" v-model="plan.title">
           </div>
           <div class="singleText">
-            <textarea class="form-control editor" cols="auto" rows="5"
-            v-model="descContent"></textarea>
+            <textarea class="form-control editor" cols="5" v-model="plan.description"></textarea>
           </div>
         </div>
 
-        <button class="stepButton btn" @click="planStep = !planStep">
+        <button class="stepButton btn" @click="checkTextInput">
           <svg xmlns="http://www.w3.org/2000/svg" id="Bold" viewBox="0 0 24 24" width="30" height="30">
             <path
               d="M17.061,9.525,13.475,5.939a1.5,1.5,0,0,0-2.121,2.122L13.793,10.5H5a1.5,1.5,0,0,0,0,3h8.793l-2.439,2.439a1.5,1.5,0,0,0,2.121,2.122l3.586-3.586A3.505,3.505,0,0,0,17.061,9.525Z" />
@@ -130,7 +184,7 @@ const planStep = ref(false)
 
     </div>
 
-    <div v-if="planStep" class="rowContainer">
+    <div v-if="step[2]" class="rowContainer">
 
       <div class="dayNavContainer">
         <input class="dayButton" type="button" v-for="day in dayCnt" :key="day" :value="'Day ' + day"
@@ -139,7 +193,7 @@ const planStep = ref(false)
 
       <div class="contentContainer">
 
-        <div class="contentsContainer">
+        <div class="contentsContainer overflow-auto">
           <contentCard v-for="(item, index) in curPlan[curDayNum].plan" :key="curDayNum + '-' + index" :item="item">
           </contentCard>
         </div>
@@ -163,7 +217,7 @@ const planStep = ref(false)
           <VueToggles :v-model="isRelease" :height="30" :width="70" checkedText="On" uncheckedText="Off" fontSize="18"
             checkedBg="#f05053" uncheckedBg="grey"></VueToggles>
         </div>
-        <button class="saveButton" @click="onMemoEditor = !onMemoEditor">저장하기</button>
+        <button class="saveButton" @click="savePlan">저장하기</button>
       </div>
     </div>
 
@@ -189,7 +243,7 @@ const planStep = ref(false)
 }
 
 .svg {
-  fill:#f05053;
+  fill: #f05053;
   margin-left: 15px;
 }
 
@@ -202,6 +256,7 @@ const planStep = ref(false)
 .singleDate {
   margin-bottom: 5px;
 }
+
 .singleText {
   margin-bottom: 5px;
 }
@@ -209,13 +264,13 @@ const planStep = ref(false)
 .stepButton {
   background-color: white;
   fill: #f05053;
-  padding:4px;
+  padding: 4px;
   border-radius: 10px;
   margin-top: 3px;
 }
 
 .dayNavContainer {
-  margin: 20px 0px 0px 20px;
+  margin: 20px 0px 10px 20px;
 }
 
 .dayButton {
@@ -224,6 +279,7 @@ const planStep = ref(false)
   padding: 10px;
   font-weight: bolder;
 }
+
 .selectedDayButton {
   color: #f05053;
 }
@@ -240,6 +296,8 @@ const planStep = ref(false)
   display: flex;
   flex-direction: column;
   align-items: center;
+
+  height: 300px;
 }
 
 .memoContainer {

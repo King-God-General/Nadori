@@ -1,12 +1,10 @@
-import { attractionAxios } from "@/utils/axios";
+import { NadoriAxios } from "@/utils/axios";
 
-const attractionAPI= attractionAxios()
+const attractionAPI= NadoriAxios()
 
-//api 호출 함수
 const getAllData = (success,fail) => {
     attractionAPI.get('api/attraction').then(success).catch(fail)
 }
-
 const getConditionalData = (sidoCode, gugunCode, contentTypeId, success,fail) => {
     attractionAPI.get('api/attraction/'+sidoCode+'/'+gugunCode+'/'+contentTypeId).then(success).catch(fail)
 }

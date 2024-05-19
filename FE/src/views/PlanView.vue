@@ -17,11 +17,9 @@ import Map from '@/components/Map.vue'
   flex-direction: row;
 }
 .plan {
-  width: 40%;
+  flex: 0 0 600px;
 }
-
 .map {
-  /* background-color: rgb(140, 127, 255); */
-  width: 60%;
+  width: auto;
 }
 </style>

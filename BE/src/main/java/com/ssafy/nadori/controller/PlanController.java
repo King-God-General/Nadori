@@ -47,6 +47,8 @@ public class PlanController {
 	
 	@PostMapping
 	protected ResponseEntity<Integer> postPlan(@RequestBody RequestPlan plan) throws Exception{
+		System.out.print(plan.toString());
+		
 		return new ResponseEntity<Integer>(planService.registerPlan(plan), HttpStatus.OK);
 	}
 	
