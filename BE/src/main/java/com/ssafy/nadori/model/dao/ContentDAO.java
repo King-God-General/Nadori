@@ -12,12 +12,10 @@ public interface ContentDAO {
 		//등록
 		int insertContent(Content content);
 		
-		//삭제 - planId
-		int deleteAllContents(int planId);
+		//삭제
+		int deleteContents(int planId);
 		
-		//조회 - planId
-		List<Content> selectContentsByPlanId(int planId);
-		//조회 - planId+dayNum
-		List<Content> selectContentsByDayNum(Map<String,Object> condition);
+		//조회
+		List<Content> selectContents(int planId);
 
 }

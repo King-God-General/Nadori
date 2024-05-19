@@ -14,17 +14,21 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.ssafy.nadori.model.dto.Content;
 import com.ssafy.nadori.model.dto.Plan;
 import com.ssafy.nadori.model.dto.RequestPlan;
+import com.ssafy.nadori.model.service.ContentService;
 import com.ssafy.nadori.model.service.PlanService;
 
 @RequestMapping("/api/plan")
 @RestController
 public class PlanController {
 	public final PlanService planService;
+	public final ContentService contentService;
 	
-	public PlanController(PlanService planService) {
+	public PlanController(PlanService planService, ContentService contentService) {
 		this.planService=planService;
+		this.contentService=contentService;
 	}
 	
 	@GetMapping
@@ -54,6 +58,21 @@ public class PlanController {
 	@PutMapping
 	protected ResponseEntity<Integer> putPlan(@RequestBody RequestPlan plan) throws Exception{
 		return new ResponseEntity<Integer>(planService.modifyPlan(plan), HttpStatus.OK);
+	}
+	
+	@GetMapping("/contents/{planId}")
+	protected ResponseEntity<List<Content>> getContentList(@PathVariable int planId) throws Exception {
+	    return new ResponseEntity<List<Content>>(contentService.getContents(planId), HttpStatus.OK);
+	}
+	
+	@PostMapping("/contents/{planId}")
+	protected ResponseEntity<Integer> postContentList(@PathVariable int planId, @RequestBody List<Content> contents) throws Exception {
+	    return new ResponseEntity<Integer>(contentService.registerContents(planId, contents), HttpStatus.OK);
+	}
+	
+	@PutMapping("/contents/{planId}")
+	protected ResponseEntity<String> putContentList(@PathVariable int planId, @RequestBody List<Content> contents) throws Exception {
+		return new ResponseEntity<String>(contentService.modifyContents(planId, contents), HttpStatus.OK);
 	}
 	
 }

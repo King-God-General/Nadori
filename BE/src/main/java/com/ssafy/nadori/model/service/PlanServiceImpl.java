@@ -35,7 +35,7 @@ public class PlanServiceImpl implements PlanService{
 
 	@Override
 	public int removePlan(int planId) throws Exception {
-		int removedContents=contentDAO.deleteAllContents(planId);
+		int removedContents=contentDAO.deleteContents(planId);
 		int removedPlan=planDao.deletePlan(planId);
 		System.out.println(removedPlan+"개의 plan에 대한 "+removedContents+"개의 content가 삭제되었습니다.");
 		return removedPlan;

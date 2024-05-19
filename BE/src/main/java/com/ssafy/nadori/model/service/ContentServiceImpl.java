@@ -19,30 +19,33 @@ public class ContentServiceImpl implements ContentService{
 	}
 	
 	@Override
-	public boolean registerContent(Content content) throws Exception {
-		return contentDao.insertContent(content)>0;
+	public int registerContents(int planId, List<Content> contents) throws Exception {
+		int savedContents=0;
+		for (Content c: contents) {
+			c.setPlanId(planId);
+			savedContents+=contentDao.insertContent(c);	
+		}
+		return savedContents;
 	}
 
 	@Override
-	public boolean modifyContent(Content content) throws Exception {
-		return contentDao.updateContent(content)>0;
+	public int removeContents(int planId) throws Exception {
+		return contentDao.deleteContents(planId);
 	}
 
 	@Override
-	public boolean removeContent(Content content) throws Exception {
-		return contentDao.deleteContent(content)>0;
+	public List<Content> getContents(int planId) throws Exception {
+		return contentDao.selectContents(planId);
 	}
 
-	@Transactional(readOnly = true)
 	@Override
-	public List<Content> getContents() throws Exception {
-		return contentDao.selectContents();
-	}
-
-	@Transactional(readOnly = true)
-	@Override
-	public List<Content> getContents(int dayNum) throws Exception {
-		return contentDao.selectContentsByDayNum(dayNum);
+	public String modifyContents(int planId, List<Content> contents) throws Exception {
+		int removeResult = removeContents(planId);
+		int registerResult = 0;
+		if (removeResult>0) {
+			registerResult =  registerContents(planId, contents);
+		}
+		return removeResult+"개의 과거 데이터를 삭제한 후, "+ registerResult+"개의 데이터를 추가하였습니다.";
 	}
 
 }
