@@ -46,4 +46,7 @@ select * from member;
 select * from plan;
 select * from  content;
 
+delete from content where plan_id>=4;
+delete from plan where plan_id>=4;
+
 commit;

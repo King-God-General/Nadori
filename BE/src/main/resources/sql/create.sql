@@ -50,7 +50,6 @@ create table plan (
     description varchar(500),
     startDate datetime not null,
     endDate datetime not null,
-    isRelease boolean not null,
     foreign key (member_id) references member(member_id)
 );
 
