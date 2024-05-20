@@ -1,13 +1,18 @@
 <script setup>
-import { ref, reactive, computed, watch, onMounted, initCustomFormatter } from 'vue'
+import { ref, reactive, computed, watch, onMounted } from 'vue'
 import '@vuepic/vue-datepicker/dist/main.css'
 import contentCard from '@/components/contentCard.vue'
 import { useUserPlanStore } from '@/stores/userPlan'
 import { storeToRefs } from 'pinia'
 import contentAPI from '@/apis/content'
+import { defineEmits } from 'vue';
+
+const emit = defineEmits(['clickAttractionCard']);
 
 const userPlanStore = useUserPlanStore()
 const { curPlan, curDayNum } = storeToRefs(userPlanStore)
+
+onMounted()
 
 const plan = reactive({
   planId: 1,
@@ -17,15 +22,15 @@ const plan = reactive({
   startDate: '2024-06-01',
   endDate: '2024-06-04'
 })
-const isRelease = ref(true)
 
-const init = (id) => {
+const curMemberId = 1;
+
+const init = () => {
   contentAPI.getContents(
     plan.planId,
     (response) => {
       console.log('플랜에 대한 콘텐츠를 성공적으로 불러왔습니다. :' + JSON.stringify(response.data))
       curPlan.value = reverseTransformCurPlan(response.data)
-      console.log('불러온 데이터 :' + JSON.stringify(curPlan.value))
       curDayNum.value = 1
     },
     () => {
@@ -64,8 +69,6 @@ const reverseTransformCurPlan = (transformedPlan) => {
   return result
 }
 
-init()
-
 watch(dayCnt, (newDayCnt) => {
   const newCurPlan = {}
   newDayCnt.forEach((day) => {
@@ -73,15 +76,23 @@ watch(dayCnt, (newDayCnt) => {
   })
   curPlan.value = newCurPlan
 })
+
+
+const clickAttractionCard = (item) => {
+    if (item.type=='attraction'){
+        emit('clickAttractionCard', item.content);
+    }
+}
+
 </script>
 
 <template>
   <div class="page">
     <div class="rowContainer">
-      <div class="planContainer">
-        <p>{{ plan.title }}</p>
-        <p>{{ plan.description }}</p>
-        <p>{{ plan.startDate }} ~ {{ plan.endDate }}</p>
+      <div class="headerContainer">
+        <p class="title header">{{ plan.title }}</p>
+        <p class="description header">: {{ plan.description }}</p>
+        <p class="date header">{{ plan.startDate }} ~ {{ plan.endDate }}</p>
       </div>
 
       <div class="dayNavContainer">
@@ -100,19 +111,18 @@ watch(dayCnt, (newDayCnt) => {
         <div class="contentsContainer overflow-auto">
           <contentCard
             v-for="item in curPlan[curDayNum].plan"
-            :key="
-              item.type == 'memo' ? item.type + item.content : item.type + item.content.attractionId
-            "
+            :key="item.type == 'memo' ? item.type + item.content : item.type + item.content.attractionId"
             :item="item"
+            @click="clickAttractionCard(item)"
           >
           </contentCard>
         </div>
       </div>
 
       <div class="buttonNavContainer">
-        <button class="saveButton" @click="">수정하기</button>
-        <button class="saveButton" @click="">삭제하기</button>
-        <button class="saveButton" @click="">복사하기</button>
+        <button v-if="curMemberId==plan.memberId" class="Button" >수정하기</button>
+        <button v-if="curMemberId==plan.memberId" class="Button" >삭제하기</button>
+        <button v-if="curMemberId!=plan.memberId" class="Button" >복사하기</button>
       </div>
     </div>
   </div>
@@ -123,6 +133,32 @@ watch(dayCnt, (newDayCnt) => {
   display: flex;
   flex-direction: column;
   margin: 20px;
+}
+
+.headerContainer {
+  padding: 30px;
+  border-radius: 0px 25px;
+  background: linear-gradient(to top left, rgb(248, 223, 142), rgb(252, 166, 7));
+  color: white;
+}
+
+.header{
+  margin: 0;
+}
+
+.title {
+  font-size: 1.6em;
+  font-weight: bolder;
+}
+
+.description {
+  font-size: 1.3em;
+  font-weight: bolder;
+  margin-bottom: 30px; 
+}
+
+.date {
+  font-size: 1.1em;
 }
 
 .rowContainer {
@@ -170,13 +206,14 @@ watch(dayCnt, (newDayCnt) => {
   flex-direction: row;
 }
 
-.saveButton {
+.Button {
   background-color: rgb(247, 162, 0);
   color: rgba(255, 255, 255);
   font-size: 1.1em;
   font-weight: bolder;
   border-radius: 10px;
   padding: 10px;
-  margin-top: 8px;
+  margin-top: 20px;
+  margin-right: 5px;
 }
 </style>

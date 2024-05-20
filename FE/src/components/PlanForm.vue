@@ -19,7 +19,6 @@ const onMemoEditor = ref(false);
 const plan = reactive({ planId: null, memberId: 2, title: '', description: '', startDate: '', endDate: '' });
 const memoContent = ref('');
 const isRelease = ref(true);
-const refreshKey = ref(0);  // Reactive key to force re-render
 
 const dayCnt = computed(() => {
   const start = new Date(plan.startDate);
