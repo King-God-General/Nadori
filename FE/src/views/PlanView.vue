@@ -1,12 +1,14 @@
 <script setup>
-import Plan from '@/components/Plan.vue'
+import PlanForm from '@/components/PlanForm.vue'
+import PlanDetail from '@/components/PlanDetail.vue'
 import Map from '@/components/Map.vue'
 
 </script>
 
 <template>
   <div class="main">
-    <Plan class="plan"></Plan>
+    <!-- <PlanForm class="plan"></PlanForm> -->
+    <PlanDetail class="plan"></PlanDetail>
     <Map class="map"></Map>
   </div>
 </template>

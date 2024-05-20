@@ -50,6 +50,7 @@ create table plan (
     description varchar(500),
     startDate datetime not null,
     endDate datetime not null,
+    isRelease boolean not null,
     foreign key (member_id) references member(member_id)
 );
 
@@ -64,6 +65,8 @@ create table content (
     foreign key (plan_id) references plan(plan_id),
     foreign key (attraction_id) references attraction(attraction_id)
 );
+
+select * from attraction where title like "%한라산%";
 
 commit;
 

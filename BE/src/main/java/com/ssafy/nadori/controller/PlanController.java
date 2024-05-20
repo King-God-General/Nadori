@@ -69,7 +69,10 @@ public class PlanController {
 	
 	@PostMapping("/contents/{planId}")
 	protected ResponseEntity<Integer> postContentList(@PathVariable int planId, @RequestBody List<Content> contents) throws Exception {
-	    return new ResponseEntity<Integer>(contentService.registerContents(planId, contents), HttpStatus.OK);
+	    for (Content c: contents) {
+	    	System.out.println(c.toString());
+	    }
+		return new ResponseEntity<Integer>(contentService.registerContents(planId, contents), HttpStatus.OK);
 	}
 	
 	@PutMapping("/contents/{planId}")

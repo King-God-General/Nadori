@@ -1,32 +1,32 @@
 <script setup>
 import { ref, reactive, computed, watch } from "vue";
-import '@vuepic/vue-datepicker/dist/main.css'
+import '@vuepic/vue-datepicker/dist/main.css';
 import VueDatePicker from '@vuepic/vue-datepicker';
 import contentCard from "@/components/contentCard.vue";
 import { VueToggles } from "vue-toggles";
-
 import { useUserPlanStore } from "@/stores/userPlan";
 import { storeToRefs } from "pinia";
-
 import planAPI from "@/apis/plan";
+import contentAPI from "@/apis/content";
 
-const userPlanStore = useUserPlanStore()
-const { curPlan, curDayNum } = storeToRefs(userPlanStore)
+const userPlanStore = useUserPlanStore();
+const { curPlan, curDayNum } = storeToRefs(userPlanStore);
 
-const step = ref([true, false, false])
-const isRelease = ref(false);
-const onMemoEditor = ref(false)
+const step = ref([true, false, false]);
+const onMemoEditor = ref(false);
 
-//로그인 기능 만든 다음에 수정해야 함!
-const plan= reactive({planId: null, memberId:2, title:'', description:'', startDate:'', endDate:''})
-const memoContent = ref('')
+// 로그인 기능 만든 다음에 수정해야 함!
+const plan = reactive({ planId: null, memberId: 2, title: '', description: '', startDate: '', endDate: '' });
+const memoContent = ref('');
+const isRelease = ref(true);
+const refreshKey = ref(0);  // Reactive key to force re-render
 
 const dayCnt = computed(() => {
   const start = new Date(plan.startDate);
-    const end = new Date(plan.endDate);
-    const diffTime = Math.abs(end - start);
-    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24)) + 1;
-    return Array.from({ length: diffDays }, (_, i) => i + 1);
+  const end = new Date(plan.endDate);
+  const diffTime = Math.abs(end - start);
+  const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24)) + 1;
+  return Array.from({ length: diffDays }, (_, i) => i + 1);
 });
 
 const formatDate = (date) => {
@@ -34,33 +34,28 @@ const formatDate = (date) => {
   const month = date.getMonth() + 1;
   const day = date.getDate();
 
-  if (month || day < 10) {
+  if (month < 10 || day < 10) {
     const zeroDay = ('00' + day).slice(-2);
     const zeroMonth = ('00' + month).slice(-2);
     return `${year}-${zeroMonth}-${zeroDay}`;
   } else {
     return `${year}-${month}-${day}`;
   }
-}
+};
 
 const changeCurDayNum = (n) => {
   curDayNum.value = n;
-}
+};
 
 const addMemo = () => {
-  if (memoContent.value != '' || memoContent.value != '\n') {
+  if (memoContent.value.trim() !== '') {
     curPlan.value[curDayNum.value].plan.push({
       type: 'memo',
       content: memoContent.value
-    })
+    });
     memoContent.value = '';
   }
-}
-
-const savePlan = () => {
-  transformCurPlan();
-  
-}
+};
 
 const transformCurPlan = () => {
   const result = [];
@@ -76,32 +71,51 @@ const transformCurPlan = () => {
       result.push(transformedItem);
     });
   });
-}
+  return result;
+};
 
 const checkDateInput = () => {
-  if (plan.startDate && plan.endDate){
-    plan.startDate=formatDate(plan.startDate);
-    plan.endDate=formatDate(plan.endDate);
-    step.value[0]=false;
-    step.value[1]=true;
+  if (plan.startDate && plan.endDate) {
+    plan.startDate = formatDate(plan.startDate);
+    plan.endDate = formatDate(plan.endDate);
+    step.value[0] = false;
+    step.value[1] = true;
   }
-}
+};
+
 const checkTextInput = () => {
   if (plan.title && plan.description) {
     planAPI.postPlan(
       plan,
-      (response)=>{
-        console.log("플랜 저장을 성공했습니다.: "+response.data);
-        plan.planId=response.data;
-        step.value[1]=false;
-        step.value[2]=true;
+      (response) => {
+        console.log("플랜 저장에 성공했습니다.: " + response.data);
+        plan.planId = response.data;
+        step.value[1] = false;
+        step.value[2] = true;
       },
-      ()=>{
-        console.log("플랜 저장을 실패했습니다.");
+      () => {
+        console.log("플랜 저장에 실패했습니다.");
       }
-    )
+    );
   }
-}
+};
+
+const savePlan = () => {
+
+
+  console.log(curPlan);
+
+  contentAPI.postContents(
+    plan.planId,
+    transformCurPlan(),
+    () => {
+      console.log("현재 플랜에 대한 콘텐츠 저장에 성공했습니다.");
+    },
+    () => {
+      console.log("현재 플랜에 대한 콘텐츠 저장에 실패했습니다.");
+    }
+  );
+};
 
 watch(dayCnt, (newDayCnt) => {
   const newCurPlan = {};
@@ -111,13 +125,19 @@ watch(dayCnt, (newDayCnt) => {
   curPlan.value = newCurPlan;
 });
 
+function handleClose(item) {
+  console.log(curPlan.value[curDayNum.value].plan);
+  curPlan.value[curDayNum.value].plan = curPlan.value[curDayNum.value].plan.filter((c) => c !== item);
+  console.log(curPlan.value[curDayNum.value].plan);
+}
+
 </script>
 
 <template>
 
   <div class="page">
 
-    <div class="rowContainer">
+    <!-- <div class="rowContainer">
       <div class="svg">
         <svg xmlns="http://www.w3.org/2000/svg" id="Layer_1" data-name="Layer 1" viewBox="0 0 24 24" width="80"
           height="80">
@@ -125,7 +145,7 @@ watch(dayCnt, (newDayCnt) => {
             d="m24,18c0,2.206-1.794,4-4,4h-5c-.553,0-1-.448-1-1s.447-1,1-1h5c1.103,0,2-.897,2-2s-.897-2-2-2h-7c-2.206,0-4-1.794-4-4s1.794-4,4-4h2c.553,0,1,.448,1,1s-.447,1-1,1h-2c-1.103,0-2,.897-2,2s.897,2,2,2h7c2.206,0,4,1.794,4,4Zm-12,2.5c0,.828-.672,1.5-1.5,1.5h-.525c.012.082.025.164.025.25,0,.966-.784,1.75-1.75,1.75s-1.75-.784-1.75-1.75c0-.086.013-.168.025-.25h-2.05c.012.082.025.164.025.25,0,.966-.784,1.75-1.75,1.75s-1.75-.784-1.75-1.75c0-.114.013-.224.033-.331-.599-.197-1.033-.754-1.033-1.419v-2.5c0-1.654,1.346-3,3-3h1.895c1.34,0,2.584.666,3.328,1.781l1.479,2.219h.798c.828,0,1.5.672,1.5,1.5Zm-10-1.5h5.298l-.74-1.109c-.372-.558-.994-.891-1.664-.891h-1.895c-.551,0-1,.449-1,1v1Zm17-9c.553,0,1-.448,1-1v-3.75l3.565-1.885c.581-.399.581-1.329,0-1.729l-2.813-1.259c-.556-.249-1.151-.377-1.751-.377-.553,0-1,.448-1,1v8c0,.552.447,1,1,1Z" />
         </svg>
       </div>
-    </div>
+    </div> -->
 
     <div class="rowContainer" v-if="step[0]">
 
@@ -186,6 +206,12 @@ watch(dayCnt, (newDayCnt) => {
 
     <div v-if="step[2]" class="rowContainer">
 
+      <div class="planContainer">
+        <p>{{ plan.title }}</p>
+        <p>{{ plan.description }}</p>
+        <p>{{ plan.startDate }} ~ {{ plan.endDate }}</p>
+      </div>
+
       <div class="dayNavContainer">
         <input class="dayButton" type="button" v-for="day in dayCnt" :key="day" :value="'Day ' + day"
           @click="changeCurDayNum(day)" :class="{ 'selectedDayButton': curDayNum === day }">
@@ -194,7 +220,7 @@ watch(dayCnt, (newDayCnt) => {
       <div class="contentContainer">
 
         <div class="contentsContainer overflow-auto">
-          <contentCard v-for="(item, index) in curPlan[curDayNum].plan" :key="curDayNum + '-' + index" :item="item">
+          <contentCard v-for="(item, index) in curPlan[curDayNum].plan" :key="item.type=='memo'?item.type+item.content : item.type+item.content.attractionId" :item="item" @close="handleClose(item)">
           </contentCard>
         </div>
 
@@ -214,7 +240,7 @@ watch(dayCnt, (newDayCnt) => {
       <div class="buttonNavContainer">
         <div class="toggle">
           <div class="toggleTitle">다른 사람들과 공유하시겠어요?</div>
-          <VueToggles :v-model="isRelease" :height="30" :width="70" checkedText="On" uncheckedText="Off" fontSize="18"
+          <VueToggles :v-model="plan.isRelease" :height="30" :width="70" checkedText="On" uncheckedText="Off" fontSize="18"
             checkedBg="#f05053" uncheckedBg="grey"></VueToggles>
         </div>
         <button class="saveButton" @click="savePlan">저장하기</button>
@@ -239,11 +265,11 @@ watch(dayCnt, (newDayCnt) => {
   padding: 30px;
   border-radius: 25px 0px;
   height: auto;
-  background: linear-gradient(50deg, #e1eec3, #f05053);
+  background: linear-gradient(50deg, rgb(248, 224, 145), rgb(247,162,0));
 }
 
 .svg {
-  fill: #f05053;
+  fill: rgb(247,162,0);
   margin-left: 15px;
 }
 
@@ -263,7 +289,7 @@ watch(dayCnt, (newDayCnt) => {
 
 .stepButton {
   background-color: white;
-  fill: #f05053;
+  fill: rgb(247,162,0);
   padding: 4px;
   border-radius: 10px;
   margin-top: 3px;
@@ -275,13 +301,13 @@ watch(dayCnt, (newDayCnt) => {
 
 .dayButton {
   font-size: 1.1em;
-  color: #f3d4d5;
+  color: rgb(248, 228, 192);
   padding: 10px;
   font-weight: bolder;
 }
 
 .selectedDayButton {
-  color: #f05053;
+  color: rgb(247,162,0);
 }
 
 .sectionContainer {
@@ -295,9 +321,7 @@ watch(dayCnt, (newDayCnt) => {
 .contentsContainer {
   display: flex;
   flex-direction: column;
-  align-items: center;
-
-  height: 300px;
+  align-items: flex-end
 }
 
 .memoContainer {
@@ -309,7 +333,7 @@ watch(dayCnt, (newDayCnt) => {
   background-color: white;
   border-radius: 10px;
   height: fit-content;
-  fill: #f05053;
+  fill: rgb(247,162,0);
 }
 
 .editor {
@@ -327,7 +351,7 @@ watch(dayCnt, (newDayCnt) => {
 }
 
 .saveButton {
-  background-color: #f05053;
+  background-color: rgb(247,162,0);
   color: rgba(255, 255, 255);
   font-size: 1.1em;
   font-weight: bolder;

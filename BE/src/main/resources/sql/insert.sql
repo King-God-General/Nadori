@@ -30,18 +30,18 @@ insert into plan (plan_id, title, description, startDate, endDate, member_id) va
 -- content 테이블에 더미 데이터 삽입
 INSERT INTO content (content_id, plan_id, dayNum, contentNum, memo, attraction_id) VALUES
 (1, 1, 1, 1, '오전 11시 비행기니까 적어도 9시까지는 공항 도착해야 함!!!', NULL),
-(2, 1, 1, 2, NULL, '264590'),
+(2, 1, 1, 2, NULL, '127635'),
 (3, 1, 1, 3, '한', NULL),
-(5, 1, 2, 1, NULL, '264590'),
+(5, 1, 2, 1, NULL, '127635'),
 (8, 1, 2, 2, '라', NULL),
 (4, 1, 3, 1, '산', NULL),
-(6, 1, 4, 1, NULL, '264590'),
+(6, 1, 4, 1, NULL, '127635'),
 (7, 1, 4, 2, '오후 8시 비행기니까 그냥 공항에서 저녁 먹기', NULL),
 (10, 3, 1, 1, NULL, '2582346'),
 (11, 3, 1, 2, '일단 밥부터 먹는다', NULL),
 (9, 3, 2, 1, '집에 간드아아ㅏ아악 가기 싫억', NULL);
 
--- select * from attraction;
+select * from attraction where attraction_id='1829744';
 select * from member;
 select * from plan;
 select * from  content;

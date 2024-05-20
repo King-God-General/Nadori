@@ -2,6 +2,8 @@
 import { NaverMap, NaverMarker } from 'vue3-naver-maps'
 import { ref, onMounted } from 'vue';
 import attractionAPI from "@/apis/attraction"
+import { useUserPlanStore } from "@/stores/userPlan";
+import { storeToRefs } from "pinia";
 
 const mapRef = ref(null)
 const morphOption = {
@@ -316,14 +318,11 @@ const contentTypeList = [
   { name: '쇼핑', value: 38 },
   { name: '음식점', value: 39 }
 ]
-
 const selectedGugunList = ref({});
 const searchResult = ref({})
-
 const selectedSidoCode = ref(0);
 const selectedGugunCode = ref(0);
 const selectedContentTypeId = ref(0);
-
 const selectAttraction = ref(null);
 
 onMounted(() => {
@@ -378,13 +377,12 @@ const selectMarker = (item) => {
   selectAttraction.value=item;
 };
 
-import { useUserPlanStore } from "@/stores/userPlan";
-import { storeToRefs } from "pinia";
 const userPlanStore = useUserPlanStore() 
 const { curPlan, curDayNum } = storeToRefs(userPlanStore)
 
 const addAttraction = () => {
-  console.log("관광지 추가 시도: "+ selectAttraction.value)
+
+  console.log(curPlan.value[curDayNum.value].plan);
     curPlan.value[curDayNum.value].plan.push({
       type: 'attraction',
       content: selectAttraction.value
@@ -495,12 +493,10 @@ const addAttraction = () => {
   margin: 10px 0px 15px 0px;
 }
 .selectAttractionDataContainer{
-  background: linear-gradient(to bottom left, #e1eec3, #f05053);
+  background: linear-gradient(to bottom left, rgb(248, 224, 145), rgb(247,162,0));
   padding: 20px;
   border-radius: 0px 0px 25px 25px;
-}
-.selectAttractionTitle {
-  color: #272343;
+  color: rgb(24,42,57);
 }
 
 .title {
@@ -521,7 +517,7 @@ const addAttraction = () => {
 
 .card-content__more-btn {
   appearance: none;
-  border: 1.5px solid black;
+  border: 1.5px solid rgb(24,42,57);
   padding: 5px;
   border-radius: 5px;
   cursor: pointer;
@@ -537,19 +533,21 @@ const addAttraction = () => {
 }
 
 .btn {
-  background: linear-gradient(to bottom left, #e1eec3, #f05053);
+  background: linear-gradient(50deg, rgb(248, 224, 145), rgb(247,162,0));
   border:none;
-  color: rgba(255, 255, 255);
+  color: rgb(24,42,57);
   font-weight: bolder;
   width: 300px;
 }
 
 .svgCloseButton {
+  fill: rgb(24,42,57);
   margin-bottom: 7px;
   margin-left: 7px; 
 }
 
 .svgButton {
+  fill: rgb(24,42,57);
   margin-top: 4px;
   float:right;
 }

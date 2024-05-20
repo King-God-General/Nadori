@@ -17,8 +17,11 @@ const postPlan = (plan, success, fail) => {
 const putPlan = (plan, success, fail) => {
     planAPI.put('api/plan', plan).then(success).catch(fail)
 }
-const deletePlan = (){
-
+const deletePlan = (planId, success, fail) => {
+    planAPI.delete(`api/plan/${planId}`).then(success).catch(fail)
 }
 
-export default {getPlans, getPlansByKeyword, getPlansByUsername, postPlan}
+export default {
+    getPlans, getPlansByKeyword, getPlansByUsername,
+    postPlan, putPlan, deletePlan
+}
