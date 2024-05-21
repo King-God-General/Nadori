@@ -40,6 +40,11 @@ public class PlanServiceImpl implements PlanService{
 		System.out.println(removedPlan+"개의 plan에 대한 "+removedContents+"개의 content가 삭제되었습니다.");
 		return removedPlan;
 	}
+	
+	@Override
+	public Plan getPlan(int planId) throws Exception {
+		return planDao.selectPlan(planId);
+	}
 
 	@Override
 	public List<Plan> getPlans() throws Exception {

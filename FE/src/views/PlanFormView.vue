@@ -1,7 +1,6 @@
 <script setup>
 import PlanForm from '@/components/PlanForm.vue'
 import Map from '@/components/Map.vue'
-
 </script>
 
 <template>
@@ -17,7 +16,7 @@ import Map from '@/components/Map.vue'
   flex-direction: row;
 }
 .plan {
-  flex: 0 0 600px;
+  flex: 0 0 450px;
 }
 .map {
   width: auto;

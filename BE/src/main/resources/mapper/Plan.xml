@@ -35,6 +35,12 @@
   		delete from plan where plan_id=#{planId}
   	</delete>
   	
+  	<select id="selectPlan" parameterType="int">
+  		select plan_id, title, description, startDate, endDate, member_id, username 
+  		from plan join member using (member_id)
+  		where plan_id=#{planId}
+  	</select>
+  	
   	<select id="selectPlans" resultMap="PlanResultMap">
   		select plan_id, title, description, startDate, endDate, member_id, username 
   		from plan join member using (member_id)

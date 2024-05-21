@@ -31,6 +31,11 @@ public class PlanController {
 		this.contentService=contentService;
 	}
 	
+	@GetMapping("/{planId}")
+	protected ResponseEntity<Plan> getPlan(@PathVariable int planId) throws Exception {
+	    return new ResponseEntity<Plan>(planService.getPlan(planId), HttpStatus.OK);
+	}
+	
 	@GetMapping
 	protected ResponseEntity<List<Plan>> getPlanList(@RequestParam(name = "keyword", required = false) String keyword,
 	                                                 @RequestParam(name = "username", required = false) String username) throws Exception {

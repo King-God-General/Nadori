@@ -19,6 +19,8 @@ public interface PlanDAO {
 		int deletePlan(int planId);
 		
 		//조회
+		Plan selectPlan(int planId);
+		//조회
 		List<Plan> selectPlans();
 		//조회 - 키워드
 		List<Plan> selectPlansByKeyword(String keyword);

@@ -17,6 +17,9 @@ public interface PlanService {
 	int removePlan(int planId) throws Exception;
 	
 	//조회
+	Plan getPlan(int planId) throws Exception;
+	
+	//조회
 	List<Plan> getPlans() throws Exception;
 	
 	//조회 - 키워드
