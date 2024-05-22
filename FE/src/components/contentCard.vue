@@ -105,7 +105,7 @@ p {
 }
 
 img {
-  height: 120px;
+  width: 180px;
   border-radius: 10px 0px 0px 10px;
 }
 
