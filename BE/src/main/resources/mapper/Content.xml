@@ -5,27 +5,6 @@
   
   <mapper namespace="com.ssafy.nadori.model.dao.ContentDAO">
   	
-  	<!-- 
-  	<resultMap type="Attraction" id="AttractionResultMap">
-	    <id column="attraction_id" property="attractionId"/>
-	    <result column="overview" property="overview"/>
-	    <result column="cat1" property="cat1"/>
-	    <result column="cat2" property="cat2"/>
-	    <result column="cat3" property="cat3"/>
-	    <result column="title" property="title"/>
-	    <result column="addr1" property="addr1"/>
-	    <result column="addr2" property="addr2"/>
-	    <result column="zipcode" property="zipcode"/>
-	    <result column="content_type_id" property="contentTypeId"/>
-	    <result column="first_image" property="firstImage"/>
-	    <result column="first_image2" property="firstImage2"/>
-	    <result column="sido_code" property="sidoCode"/>
-	    <result column="gugun_code" property="gugunCode"/>
-	    <result column="latitude" property="latitude"/>
-	    <result column="longitude" property="longitude"/>
-	</resultMap>
-  	 -->
-  	
   	<resultMap type="Attraction" id="AttractionResultMap">
 	    <id column="attraction_id" property="attractionId"/>
 	    <result column="title" property="title"/>

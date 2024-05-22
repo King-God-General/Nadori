@@ -5,6 +5,30 @@
   
   <mapper namespace="com.ssafy.nadori.model.dao.MemberDAO">
   
+  <resultMap type="Member" id="MemberResultMap">
+	    <id column="member_id" property="memberId"/>
+	    <result column="nickname" property="nickname"/>
+	    <result column="username" property="username"/>
+	</resultMap>
 	
+	<insert id="insertMember" parameterType="Member">
+		insert into member(member_id, nickname, username) 
+		values(#{memberId},#{nickname},#{username}})
+	</insert>
+	
+	<delete id="deleteMember" parameterType="Member">
+		delete from member where member_id=#{memberId} and nickname=#{nickname}
+	</delete>
+	
+	<update id="updateMember" parameterType="Member">
+		update from member set username=#{username}
+		where member_id=#{memberId} and nickname=#{nickname}
+	</update>
+	
+	<select id="selectMember" parameterType="int"  resultMap="MemberResultMap">
+		select member_id, nickname, username
+		from member
+		where member_id=#{memberId} and nickname=#{nickname}
+	</select>
 	
 </mapper>
