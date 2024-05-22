@@ -1,10 +1,20 @@
 <script setup>
+import { useNadoriStore } from '@/stores/nadori'
+import { storeToRefs } from 'pinia'
+import { onMounted } from 'vue'
 import '@/assets/tailwind.css'
 import { useRouter } from 'vue-router'
+const nadoriStore = useNadoriStore()
+const { plan, planDetail, curDayNum } = storeToRefs(nadoriStore)
 const router = useRouter()
 const moveToDetail = () => {
   router.push(`/plan/detail/3`)
 }
+onMounted(()=>{
+  plan.value=null
+  planDetail.value=null
+  curDayNum.value=1
+})
 </script>
 
 <template>

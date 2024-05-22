@@ -1,6 +1,5 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import HomeView from '@/views/HomeView.vue'
-import SignUpView from '@/views/SignUpView.vue'
 import MyPageView from '@/views/MyPageView.vue'
 import PlanDetailView from '@/views/PlanDetailView.vue'
 import PlanFormView from '@/views/PlanFormView.vue'
@@ -11,18 +10,13 @@ const router = createRouter({
   routes: [
     {
       path: '/',
-      ame: 'home',
+      name: 'origin',
       component: HomeView
     },
     {
       path: '/home',
       name: 'home',
       component: HomeView
-    },
-    {
-      path: '/signup',
-      name: 'signup',
-      component: SignUpView
     },
     {
       path: '/mypage',
@@ -33,12 +27,18 @@ const router = createRouter({
       path: '/plan/detail/:planId',
       name: 'planDetail',
       component: PlanDetailView,
-      props: true,
+      props: true
     },
     {
       path: '/plan/form',
       name: 'planForm',
-      component: PlanFormView
+      component: PlanFormView,
+    },
+    {
+      path: '/plan/form/:planId',
+      name: 'planModify',
+      component: PlanFormView,
+      props: true
     },
     {
       path: '/login/kakao',

@@ -1,11 +1,13 @@
 <script setup>
+import { defineProps } from 'vue'
 import PlanForm from '@/components/PlanForm.vue'
 import Map from '@/components/Map.vue'
+const props = defineProps(['planId'])
 </script>
 
 <template>
   <div class="main">
-    <PlanForm class="plan"></PlanForm>
+    <PlanForm class="plan" :planId="props.planId"></PlanForm>
     <Map class="map"></Map>
   </div>
 </template>

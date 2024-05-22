@@ -1,9 +1,8 @@
 <script setup>
-import { ref, reactive, computed, watch } from 'vue'
+import { ref, computed, watch, onMounted } from 'vue'
 import '@vuepic/vue-datepicker/dist/main.css'
 import VueDatePicker from '@vuepic/vue-datepicker'
 import contentCard from '@/components/contentCard.vue'
-import { VueToggles } from 'vue-toggles'
 import { useNadoriStore } from '@/stores/nadori'
 import { storeToRefs } from 'pinia'
 import planAPI from '@/apis/plan'
@@ -11,36 +10,28 @@ import contentAPI from '@/apis/content'
 import { useRouter } from 'vue-router'
 
 const nadoriStore = useNadoriStore()
-const { planDetail, curDayNum } = storeToRefs(nadoriStore)
+const { plan, planDetail, curDayNum, member } = storeToRefs(nadoriStore)
 
 const step = ref([true, false, false])
 const onMemoEditor = ref(false)
 const router = useRouter()
 
-const plan = reactive({
-  planId: null,
-  memberId: 2,
-  title: '',
-  description: '',
-  startDate: '',
-  endDate: ''
-})
 const memoContent = ref('')
-const isRelease = ref(true)
 
 const dayCnt = computed(() => {
-  const start = new Date(plan.startDate)
-  const end = new Date(plan.endDate)
+  const start = new Date(plan.value.startDate)
+  const end = new Date(plan.value.endDate)
   const diffTime = Math.abs(end - start)
   const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24)) + 1
   return Array.from({ length: diffDays }, (_, i) => i + 1)
 })
 
 const formatDate = (date) => {
+  
+
   const year = date.getFullYear()
   const month = date.getMonth() + 1
   const day = date.getDate()
-
   if (month < 10 || day < 10) {
     const zeroDay = ('00' + day).slice(-2)
     const zeroMonth = ('00' + month).slice(-2)
@@ -82,9 +73,9 @@ const transformPlanDetail = () => {
 }
 
 const checkDateInput = () => {
-  if (plan.startDate && plan.endDate) {
-    plan.startDate = formatDate(plan.startDate)
-    plan.endDate = formatDate(plan.endDate)
+  if (plan.value.startDate && plan.value.endDate) {
+    plan.value.startDate = formatDate(plan.value.startDate)
+    plan.value.endDate = formatDate(plan.value.endDate)
     step.value[0] = false
     step.value[1] = true
   }
@@ -108,8 +99,6 @@ const checkTextInput = () => {
 }
 
 const savePlan = () => {
-  console.log(planDetail.value)
-
   contentAPI.postContents(
     plan.planId,
     transformPlanDetail(),
@@ -138,11 +127,24 @@ function handleClose(item) {
   )
   console.log(planDetail.value[curDayNum.value].plan)
 }
+
+onMounted(() => {
+  if (plan.value == null) {
+    plan.value = {
+      planId: null,
+      memberId: member.value.memberId,
+      title: '',
+      description: '',
+      startDate: '',
+      endDate: ''
+    }
+  }
+})
 </script>
 
 <template>
   <div class="page">
-    <div class="rowContainer" v-if="step[0]">
+    <div class="rowContainer">
       <div class="contentContainer" id="forDate">
         <div class="qContainer">
           <p class="question">먼저, 여행을 떠나는 날짜를 알려주세요.</p>
@@ -150,44 +152,25 @@ function handleClose(item) {
 
         <div class="inputContainer">
           <div class="singleDate">
-            <VueDatePicker
-              v-model="plan.startDate"
-              locale="ko"
-              :format="formatDate"
-              :enable-time-picker="false"
-              placeholder="여행을 떠나는 날"
-              auto-apply
-            />
+            <VueDatePicker v-model="plan.startDate" locale="ko" :format="formatDate" :enable-time-picker="false"
+              placeholder="여행을 떠나는 날" auto-apply />
           </div>
           <div class="singleDate">
-            <VueDatePicker
-              v-model="plan.endDate"
-              locale="ko"
-              :format="formatDate"
-              :enable-time-picker="false"
-              placeholder="집으로 돌아오는 날"
-              auto-apply
-            />
+            <VueDatePicker v-model="plan.endDate" locale="ko" :format="formatDate" :enable-time-picker="false"
+              placeholder="집으로 돌아오는 날" auto-apply />
           </div>
         </div>
 
         <button class="stepButton btn" @click="checkDateInput">
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            id="Bold"
-            viewBox="0 0 24 24"
-            width="30"
-            height="30"
-          >
+          <svg xmlns="http://www.w3.org/2000/svg" id="Bold" viewBox="0 0 24 24" width="30" height="30">
             <path
-              d="M17.061,9.525,13.475,5.939a1.5,1.5,0,0,0-2.121,2.122L13.793,10.5H5a1.5,1.5,0,0,0,0,3h8.793l-2.439,2.439a1.5,1.5,0,0,0,2.121,2.122l3.586-3.586A3.505,3.505,0,0,0,17.061,9.525Z"
-            />
+              d="M17.061,9.525,13.475,5.939a1.5,1.5,0,0,0-2.121,2.122L13.793,10.5H5a1.5,1.5,0,0,0,0,3h8.793l-2.439,2.439a1.5,1.5,0,0,0,2.121,2.122l3.586-3.586A3.505,3.505,0,0,0,17.061,9.525Z" />
           </svg>
         </button>
       </div>
     </div>
 
-    <div class="rowContainer" v-if="step[1]">
+    <div class="rowContainer">
       <div class="contentContainer" id="forText">
         <div class="qContainer">
           <p class="question">다음으로, 제목과 설명을 입력해주세요.</p>
@@ -203,22 +186,15 @@ function handleClose(item) {
         </div>
 
         <button class="stepButton button" @click="checkTextInput">
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            id="Bold"
-            viewBox="0 0 24 24"
-            width="30"
-            height="30"
-          >
+          <svg xmlns="http://www.w3.org/2000/svg" id="Bold" viewBox="0 0 24 24" width="30" height="30">
             <path
-              d="M17.061,9.525,13.475,5.939a1.5,1.5,0,0,0-2.121,2.122L13.793,10.5H5a1.5,1.5,0,0,0,0,3h8.793l-2.439,2.439a1.5,1.5,0,0,0,2.121,2.122l3.586-3.586A3.505,3.505,0,0,0,17.061,9.525Z"
-            />
+              d="M17.061,9.525,13.475,5.939a1.5,1.5,0,0,0-2.121,2.122L13.793,10.5H5a1.5,1.5,0,0,0,0,3h8.793l-2.439,2.439a1.5,1.5,0,0,0,2.121,2.122l3.586-3.586A3.505,3.505,0,0,0,17.061,9.525Z" />
           </svg>
         </button>
       </div>
     </div>
 
-    <div v-if="step[2]" class="rowContainer">
+    <div class="rowContainer">
       <div class="headerContainer">
         <p class="title header">{{ plan.title }}</p>
         <p class="description header">: {{ plan.description }}</p>
@@ -226,71 +202,31 @@ function handleClose(item) {
       </div>
 
       <div class="dayNavContainer">
-        <input
-          class="dayButton"
-          type="button"
-          v-for="day in dayCnt"
-          :key="day"
-          :value="'Day ' + day"
-          @click="changeCurDayNum(day)"
-          :class="{ selectedDayButton: curDayNum === day }"
-        />
+        <input class="dayButton" type="button" v-for="day in dayCnt" :key="day" :value="'Day ' + day"
+          @click="changeCurDayNum(day)" :class="{ selectedDayButton: curDayNum === day }" />
       </div>
 
       <div class="contentContainer">
         <div class="contentsContainer overflow-auto">
-          <contentCard
-            v-for="item in planDetail[curDayNum].plan"
-            :key="
-              item.type == 'memo' ? item.type + item.content : item.type + item.content.attractionId
-            "
-            :item="item"
-            @close="handleClose(item)"
-          >
+          <contentCard v-for="item in planDetail[curDayNum].plan" :key="item.type == 'memo' ? item.type + item.content : item.type + item.content.attractionId
+            " :item="item" @close="handleClose(item)">
           </contentCard>
         </div>
 
         <div class="memoContainer" @keyup.enter="addMemo">
           <button class="btn addMemoButton" @click="onMemoEditor = !onMemoEditor">
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              id="Layer_1"
-              data-name="Layer 1"
-              viewBox="0 0 24 24"
-              width="24"
-              height="24"
-            >
+            <svg xmlns="http://www.w3.org/2000/svg" id="Layer_1" data-name="Layer 1" viewBox="0 0 24 24" width="24"
+              height="24">
               <path
-                d="m20.5,0H3.5C1.57,0,0,1.57,0,3.5v20.5h18.381l5.619-5.664V3.5c0-1.93-1.57-3.5-3.5-3.5ZM3,3.5c0-.275.224-.5.5-.5h17c.276,0,.5.225.5.5v12.5h-5v5H3V3.5Zm7.5,12.5v-2.5h-2.5v-3h2.5v-2.5h3v2.5h2.5v3h-2.5v2.5h-3Z"
-              />
+                d="m20.5,0H3.5C1.57,0,0,1.57,0,3.5v20.5h18.381l5.619-5.664V3.5c0-1.93-1.57-3.5-3.5-3.5ZM3,3.5c0-.275.224-.5.5-.5h17c.276,0,.5.225.5.5v12.5h-5v5H3V3.5Zm7.5,12.5v-2.5h-2.5v-3h2.5v-2.5h3v2.5h2.5v3h-2.5v2.5h-3Z" />
             </svg>
           </button>
-          <textarea
-            v-show="onMemoEditor"
-            class="form-control editor"
-            name="memo"
-            id="memo"
-            cols="auto"
-            rows="5"
-            v-model="memoContent"
-          ></textarea>
+          <textarea v-show="onMemoEditor" class="form-control editor" name="memo" id="memo" cols="auto" rows="5"
+            v-model="memoContent"></textarea>
         </div>
       </div>
 
       <div class="buttonNavContainer">
-        <div class="toggle">
-          <div class="toggleTitle">다른 사람들과 공유하시겠어요?</div>
-          <VueToggles
-            :v-model="plan.isRelease"
-            :height="20"
-            :width="50"
-            checkedText="On"
-            uncheckedText="Off"
-            fontSize="10"
-            checkedBg="#f05053"
-            uncheckedBg="grey"
-          ></VueToggles>
-        </div>
         <button class="saveButton" @click="savePlan">저장하기</button>
       </div>
     </div>

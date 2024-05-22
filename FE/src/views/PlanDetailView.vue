@@ -1,6 +1,6 @@
 <script setup>
 import { NaverMap, NaverMarker } from 'vue3-naver-maps'
-import { ref, reactive, computed, watch, onMounted } from 'vue'
+import { ref, watch, onMounted, defineProps } from 'vue'
 import { useRouter } from 'vue-router'
 import { useNadoriStore } from '@/stores/nadori'
 import { storeToRefs } from 'pinia'
@@ -11,7 +11,7 @@ import Swal from 'sweetalert2'
 
 const router = useRouter()
 const store = useNadoriStore()
-const { member, planDetail, curDayNum } = storeToRefs(store)
+const { member, plan, planDetail, curDayNum } = storeToRefs(store)
 
 const props = defineProps(['planId'])
 
@@ -31,8 +31,8 @@ const moveMap = () => {
     const bounds = curDayAttraction.value.reduce((acc, item) => {
       if (!acc) {
         return new window.naver.maps.LatLngBounds(
-          new window.naver.maps.LatLng(item.latitude - 0.0001, item.longitude - 0.0001),
-          new window.naver.maps.LatLng(item.latitude + 0.0001, item.longitude + 0.0001)
+          new window.naver.maps.LatLng(item.latitude - 0.000001, item.longitude - 0.000001),
+          new window.naver.maps.LatLng(item.latitude + 0.000001, item.longitude + 0.000001)
         )
       }
       acc.extend(new window.naver.maps.LatLng(item.latitude, item.longitude))
@@ -42,7 +42,6 @@ const moveMap = () => {
   }
 }
 
-const plan = ref(null)
 const dayCnt = ref([])
 const curDayAttraction = ref(null)
 
@@ -93,7 +92,7 @@ const modifyPlan = () => {
     cancelButtonText: 'X'
   }).then((result) => {
     if (result.isConfirmed) {
-      plan
+      router.push(`/plan/form/${plan.value.planId}`)
     }
   })
 }
@@ -172,12 +171,14 @@ watch(curDayAttraction, () => {
 
 //데이터 초기화
 onMounted(() => {
+  console.log(props.planId)
+
   planAPI.getPlan(
     props.planId,
     (response) => {
       plan.value = response.data
       dayCnt.value = makeDayArray()
-      console.log('plan 데이터 초기화 성공')
+      console.log('plan 데이터 초기화 성공: ' + JSON.stringify(plan.value))
     },
     () => {
       console.log('플랜 데이터를 불러오는 데 실패했습니다.')
@@ -194,6 +195,8 @@ onMounted(() => {
       console.log('플랜에 대한 콘텐츠를 불러오는 데 실패했습니다.')
     }
   )
+
+  console.log('후: ' + props.planId)
 })
 </script>
 
@@ -209,42 +212,28 @@ onMounted(() => {
           </div>
 
           <div class="dayNavContainer">
-            <input
-              class="dayButton"
-              type="button"
-              v-for="day in dayCnt"
-              :key="day"
-              :value="'Day ' + day"
-              @click="changeCurDayNum(day)"
-              :class="{ selectedDayButton: curDayNum === day }"
-            />
+            <input class="dayButton" type="button" v-for="day in dayCnt" :key="day" :value="'Day ' + day"
+              @click="changeCurDayNum(day)" :class="{ selectedDayButton: curDayNum === day }" />
           </div>
 
           <div class="contentContainer">
             <div class="contentsContainer overflow-auto">
-              <contentCard
-                v-for="item in planDetail[curDayNum].plan"
-                :key="
-                  item.type == 'memo'
-                    ? item.type + item.content
-                    : item.type + item.content.attractionId
-                "
-                :item="item"
-                @click="clickAttractionCard(item)"
-              >
+              <contentCard v-for="item in planDetail[curDayNum].plan" :key="item.type == 'memo'
+                ? item.type + item.content
+                : item.type + item.content.attractionId
+                " :item="item" @click="clickAttractionCard(item)">
               </contentCard>
             </div>
           </div>
 
           <div class="buttonNavContainer">
-            <button v-if="member.memberId == plan.memberId" class="button" @click="modifyPlan">
-              수정하기
-            </button>
-            <button v-if="member.memberId == plan.memberId" class="button" @click="removePlan">
-              삭제하기
-            </button>
+            <div v-if="member.memberId == plan.writer.memberId">
+              <button class="button" @click="modifyPlan">수정하기</button>
+              <button class="button" @click="removePlan">삭제하기</button>
+            </div>
 
-            <button v-if="member.memberId != plan.memberId" class="button">복사하기</button>
+
+            <button v-if="member.memberId != plan.writer.memberId" class="button">복사하기</button>
           </div>
         </div>
       </div>
@@ -253,11 +242,7 @@ onMounted(() => {
     <div class="map">
       <div class="page">
         <div class="mapContainer">
-          <naver-map
-            style="width: 1600px; height: 1300px"
-            :map-options="mapOptions"
-            @on-load="onLoadMap($event)"
-          >
+          <naver-map style="width: 1600px; height: 1300px" :map-options="mapOptions" @on-load="onLoadMap($event)">
             <div v-for="item in curDayAttraction" :key="item.attractionId">
               <naver-marker :latitude="item.latitude" :longitude="item.longitude" />
             </div>
@@ -273,10 +258,12 @@ onMounted(() => {
   display: flex;
   flex-direction: row;
 }
+
 .plan {
   flex: 0 0 450px;
   margin: 10px;
 }
+
 .map {
   width: auto;
 }
@@ -315,19 +302,23 @@ onMounted(() => {
   background: linear-gradient(to top left, rgb(248, 223, 142), rgb(252, 166, 7));
   color: white;
 }
+
 .title {
   font-size: 1.2em;
   font-weight: bolder;
   margin-bottom: 20px;
 }
+
 .description {
   font-size: 1em;
   font-weight: bolder;
 }
+
 .date {
   font-size: 0.9em;
   margin-bottom: 5px;
 }
+
 .address {
   font-size: 1.2em;
   font-weight: 900;
@@ -358,12 +349,14 @@ onMounted(() => {
 .dayNavContainer {
   margin: 20px 0px 10px 20px;
 }
+
 .dayButton {
   font-size: 0.9em;
   color: rgb(248, 228, 192);
   padding: 0px 10px;
   font-weight: bolder;
 }
+
 .selectedDayButton {
   color: rgb(247, 162, 0);
 }

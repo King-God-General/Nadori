@@ -3,94 +3,44 @@ import '@/assets/tailwind.css'
 import { RouterLink, RouterView } from 'vue-router'
 import { useNadoriStore } from '@/stores/nadori'
 import { storeToRefs } from 'pinia'
-import Swal from 'sweetalert2'
+import MemberAPI from '@/apis/member'
+import { useRouter } from 'vue-router'
 
 const { VITE_KAKAO_API_KEY, VITE_KAKAO_REDIRECT_URL } = import.meta.env
-
+const router = useRouter()
 const nadoriStore = useNadoriStore()
 const { member } = storeToRefs(nadoriStore)
 
 const doKakaoLogin = () => {
-  const url =
-    'https://kauth.kakao.com/oauth/authorize?client_id=' +
-    VITE_KAKAO_API_KEY +
-    '&redirect_uri=' +
-    VITE_KAKAO_REDIRECT_URL +
-    '&response_type=code&scope=profile_nickname'
+  // const url =
+  //   'https://kauth.kakao.com/oauth/authorize?client_id=' +
+  //   VITE_KAKAO_API_KEY +
+  //   '&redirect_uri=' +
+  //   VITE_KAKAO_REDIRECT_URL +
+  //   '&response_type=code&scope=profile_nickname'
+  // window.location.href = url
 
-  window.location.href = url
+  member.value={
+    memberId: "1",
+    nickname: "King",
+    username: "KingUser"
+  }
+  console.log(member.value)
+
+  router.push("/mypage")
+}
+const doKakaoLogout = () => {
+  // MemberAPI.logout(member.memberId,
+  //   ()=>{
+  //     console.log('로그아웃에 성공했습니다.')
+  //   },
+  //   ()=>{
+  //     console.log('로그아웃에 실패했습니다.')
+  //   }
+  // )
+
 }
 
-const loginForm = () => {
-  Swal.fire({
-    showCancelButton: true,
-    showDenyButton: true,
-    html: `
-    <label for="email" value="이메일">
-    <input type="email" id="email" class="form-control" placeholder="이메일">
-    <label for="email" value="비밀번호">
-    <input type="password" id="password" class="form-control" placeholder="비밀번호">
-  `,
-    focusConfirm: false,
-    confirmButtonText: '로그인',
-    denyButtonText: '카카오 로그인',
-    showLoaderOnConfirm: true,
-    preConfirm: async () => {
-      const email = Swal.getPopup().querySelector('#email').value
-      const password = Swal.getPopup().querySelector('#password').value
-
-      if (!email || !password) {
-        Swal.showValidationMessage('이메일과 비밀번호를 입력해주세요.')
-        return
-      }
-
-      try {
-        const response = await fetch('/your-login-api-endpoint', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json'
-          },
-          body: JSON.stringify({ email, password })
-        })
-        if (!response.ok) {
-          const error = await response.json()
-          Swal.showValidationMessage(`Error: ${JSON.stringify(error)}`)
-          return
-        }
-        return response.json()
-      } catch (error) {
-        Swal.showValidationMessage(`Request failed: ${error}`)
-      }
-    },
-    allowOutsideClick: () => !Swal.isLoading()
-  }).then((result) => {
-    if (result.isConfirmed) {
-      Swal.fire({
-        title: '로그인 성공!',
-        text: `${result.value.email}님, 환영합니다!`,
-        icon: 'success'
-      })
-    }
-  })
-
-  document.addEventListener('click', function (event) {
-    if (event.target.id === 'signup') {
-      Swal.fire({
-        title: '회원가입 페이지로 이동',
-        text: '회원가입 페이지로 이동합니다.',
-        icon: 'info'
-      })
-    }
-
-    if (event.target.id === 'oauth') {
-      Swal.fire({
-        title: '연동 로그인',
-        text: '연동 로그인을 시도합니다.',
-        icon: 'info'
-      })
-    }
-  })
-}
 </script>
 
 <template>
@@ -102,7 +52,7 @@ const loginForm = () => {
         </router-link>
       </div>
 
-      <div v-if="member.id == 0" class="linkContainer">
+      <div v-if="member===null" class="linkContainer">
         <button class="menu" @click="doKakaoLogin">로그인</button>
       </div>
 
