@@ -9,26 +9,29 @@
 	    <id column="member_id" property="memberId"/>
 	    <result column="nickname" property="nickname"/>
 	    <result column="username" property="username"/>
+	    <result column="accessToken" property="accessToken"/>
+	    <result column="refreshToken" property="refreshToken"/>
 	</resultMap>
 	
+	
 	<insert id="insertMember" parameterType="Member">
-		insert into member(member_id, nickname, username) 
-		values(#{memberId},#{nickname},#{username}})
+		insert into member(member_id, nickname, username, accessToken, refreshToken) 
+		values(#{memberId},#{nickname},#{username},#{accessToken},#{refreshToken})
 	</insert>
 	
-	<delete id="deleteMember" parameterType="Member">
-		delete from member where member_id=#{memberId} and nickname=#{nickname}
+	<delete id="deleteMember" parameterType="String">
+		delete from member where member_id=#{memberId}
 	</delete>
 	
 	<update id="updateMember" parameterType="Member">
 		update from member set username=#{username}
-		where member_id=#{memberId} and nickname=#{nickname}
+		where member_id=#{memberId}
 	</update>
 	
-	<select id="selectMember" parameterType="int"  resultMap="MemberResultMap">
-		select member_id, nickname, username
-		from member
-		where member_id=#{memberId} and nickname=#{nickname}
-	</select>
+	<select id="selectMember" parameterType="String" resultMap="MemberResultMap">
+    select member_id, nickname, username, accessToken, refreshToken
+    from member
+    where member_id=#{memberId}
+</select>
 	
 </mapper>

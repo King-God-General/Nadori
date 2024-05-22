@@ -32,7 +32,7 @@ public class PlanServiceImpl implements PlanService{
 	public int modifyPlan(RequestPlan plan) throws Exception {
 		return planDao.updatePlan(plan);
 	}
-
+	
 	@Override
 	public int removePlan(int planId) throws Exception {
 		int removedContents=contentDAO.deleteContents(planId);
@@ -43,7 +43,9 @@ public class PlanServiceImpl implements PlanService{
 	
 	@Override
 	public Plan getPlan(int planId) throws Exception {
-		return planDao.selectPlan(planId);
+		Plan resPlan =planDao.selectPlan(planId);
+		System.out.println(resPlan.toString());
+		return resPlan;
 	}
 
 	@Override
@@ -60,6 +62,5 @@ public class PlanServiceImpl implements PlanService{
 	public List<Plan> getPlansByUsername(String username) throws Exception {
 		return planDao.selectPlansByUsername(username);
 	}
-
 	
 }

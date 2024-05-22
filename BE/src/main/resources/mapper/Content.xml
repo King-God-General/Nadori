@@ -33,6 +33,9 @@
 	<delete id="deleteContents" parameterType="int">
 		delete from content where plan_id=#{planId}
 	</delete>
+	<delete id="deleteContentsByMemberId" parameterType="String">
+		delete from content where member_id=#{planId}
+	</delete>
 	
 	<!--attraction_id,overview,cat1,cat2,cat3,title,addr1,addr2,zipcode,content_type_id,first_image,first_image2,sido_code,gugun_code,latitude,longitude-->
 	

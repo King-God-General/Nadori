@@ -5,9 +5,11 @@ import java.time.LocalDate;
 import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.ToString;
 
 @Getter
 @Setter
+@ToString
 @Data
 public class Plan {
 	private int planId;

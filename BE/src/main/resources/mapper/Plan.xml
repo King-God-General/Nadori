@@ -7,6 +7,7 @@
   	
 	  <resultMap type="Member" id="MemberResultMap">
 	    <id column="member_id" property="memberId"/>
+	    <result column="nickname" property="nickname"/>
 	    <result column="username" property="username"/>
 	</resultMap>
   	
@@ -35,23 +36,27 @@
   		delete from plan where plan_id=#{planId}
   	</delete>
   	
-  	<select id="selectPlan" parameterType="int">
-  		select plan_id, title, description, startDate, endDate, member_id, username 
+  	<delete id="deletePlans">
+  		delete from plan where member_id=#{memberId}
+  	</delete>
+  	
+  	<select id="selectPlan" parameterType="int" resultMap="PlanResultMap">
+  		select plan_id, title, description, startDate, endDate, member_id, nickname, username 
   		from plan join member using (member_id)
   		where plan_id=#{planId}
   	</select>
   	
   	<select id="selectPlans" resultMap="PlanResultMap">
-  		select plan_id, title, description, startDate, endDate, member_id, username 
+  		select plan_id, title, description, startDate, endDate, member_id, nickname, username 
   		from plan join member using (member_id)
   	</select>
   	
   	<select id="selectPlansByKeyword" parameterType="String" resultMap="PlanResultMap">
-  		select plan_id, title, description, startDate, endDate, member_id, username from plan join member using (member_id) where title LIKE CONCAT('%',#{keyword},'%')
+  		select plan_id, title, description, startDate, endDate, member_id, nickname, username from plan join member using (member_id) where title LIKE CONCAT('%',#{keyword},'%')
   	</select>
   	
   	<select id="selectPlansByUsername" parameterType="String" resultMap="PlanResultMap">
-  		select plan_id, title, description, startDate, endDate, member_id, username from plan join member using (member_id) where username=#{username}
+  		select plan_id, title, description, startDate, endDate, member_id, nickname, username from plan join member using (member_id) where username=#{username}
   	</select>
   	
 </mapper>

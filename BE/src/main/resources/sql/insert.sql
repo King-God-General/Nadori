@@ -16,7 +16,7 @@ SET SQL_SAFE_UPDATES = 1;
 -- 더미 데이터 삽입을 위한 기본 데이터
 -- member 테이블에 더미 데이터 삽입
 insert into member (member_id, nickname, username) values
-('1', 'King', 'kingUser'),
+('1', 'King', 'KingUser'),
 ('2', 'God', 'GodUser'),
 ('3', 'General', 'GeneralUser');
 

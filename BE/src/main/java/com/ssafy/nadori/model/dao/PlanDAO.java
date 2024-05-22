@@ -17,6 +17,7 @@ public interface PlanDAO {
 		
 		//삭제
 		int deletePlan(int planId);
+		int deletePlans(String memberId);
 		
 		//조회
 		Plan selectPlan(int planId);

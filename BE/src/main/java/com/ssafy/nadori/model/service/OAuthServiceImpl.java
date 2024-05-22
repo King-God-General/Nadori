@@ -2,7 +2,6 @@ package com.ssafy.nadori.model.service;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
-import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.net.HttpURLConnection;
@@ -19,7 +18,7 @@ import org.springframework.transaction.annotation.Transactional;
 public class OAuthServiceImpl implements OAuthService{
 
 	@Override
-	public String getAccessToken(String code) {
+	public String[] getTokens(String code) {
 		
 		String accessToken="";
 		String refreshToken="";
@@ -62,13 +61,13 @@ public class OAuthServiceImpl implements OAuthService{
 			e.printStackTrace();
 		}
 		
-		return accessToken;
+		return new String[] {accessToken, refreshToken};
 	}
 
 	@Override
-	public HashMap<String, Object> getMemberInfo(String accessToken) {
+	public HashMap<String, String> getMemberInfo(String accessToken) {
 		
-		HashMap<String, Object> memberInfo = new HashMap<>();
+		HashMap<String, String> memberInfo = new HashMap<>();
 		String requestURL = "https://kapi.kakao.com/v2/user/me";
 		
 		try {

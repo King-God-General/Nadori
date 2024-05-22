@@ -14,6 +14,7 @@ public interface ContentDAO {
 		
 		//삭제
 		int deleteContents(int planId);
+		int deleteContentsByMemberId(String memberId);
 		
 		//조회
 		List<Content> selectContents(int planId);
