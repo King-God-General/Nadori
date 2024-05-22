@@ -16,10 +16,10 @@ SET SQL_SAFE_UPDATES = 1;
 
 -- 더미 데이터 삽입을 위한 기본 데이터
 -- member 테이블에 더미 데이터 삽입
-insert into member (member_id, email, password, username, gender, birthdate) values
-(1, 'king@example.com', '123', 'King', true, '1990-01-01'),
-(2, 'god@example.com', '456', 'God', false, '1985-05-15'),
-(3, 'general@example.com', '789', 'General', true, '1992-09-23');
+insert into member (member_id, email, password, username) values
+(1, 'king@example.com', '123', 'King'),
+(2, 'god@example.com', '456', 'God'),
+(3, 'general@example.com', '789', 'General');
 
 -- plan 테이블에 더미 데이터 삽입
 insert into plan (plan_id, title, description, startDate, endDate, member_id) values
@@ -46,7 +46,7 @@ select * from member;
 select * from plan;
 select * from  content;
 
-delete from content where plan_id>=4;
-delete from plan where plan_id>=4;
+delete from content where plan_id between 28 and 42;
+delete from plan where plan_id between 28 and 42;
 
 commit;

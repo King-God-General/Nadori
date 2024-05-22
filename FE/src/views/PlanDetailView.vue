@@ -31,8 +31,8 @@ const moveMap = () => {
     const bounds = curDayAttraction.value.reduce((acc, item) => {
       if (!acc) {
         return new window.naver.maps.LatLngBounds(
-          new window.naver.maps.LatLng(item.latitude, item.longitude),
-          new window.naver.maps.LatLng(item.latitude, item.longitude)
+          new window.naver.maps.LatLng(item.latitude - 0.0001, item.longitude - 0.0001),
+          new window.naver.maps.LatLng(item.latitude + 0.0001, item.longitude + 0.0001)
         )
       }
       acc.extend(new window.naver.maps.LatLng(item.latitude, item.longitude))
@@ -83,13 +83,17 @@ const reverseTransformPlanDetail = (json) => {
 //플랜 수정
 const modifyPlan = () => {
   Swal.fire({
-    text: '아직 구현 중입니다:)',
-    icon: 'info',
+    text: '플랜을 수정하시겠어요?',
+    icon: 'question',
     iconColor: '#f7a200',
+    showCancelButton: true,
     confirmButtonColor: '#f7a200',
-    confirmButtonText: '알겠습니다!'
+    confirmButtonText: 'O',
+    cancelButtonColor: '#f7a200',
+    cancelButtonText: 'X'
   }).then((result) => {
     if (result.isConfirmed) {
+      plan
     }
   })
 }
@@ -122,6 +126,22 @@ const removePlan = () => {
       )
       router.push(`/home`)
     }
+  })
+}
+
+//플랜 삭제
+const copyPlan = () => {
+  Swal.fire({
+    text: '플랜을 복사하시겠어요?',
+    icon: 'question',
+    iconColor: '#f7a200',
+    showCancelButton: true,
+    confirmButtonColor: '#f7a200',
+    cancelButtonColor: '#f7a200',
+    confirmButtonText: '네!',
+    cancelButtonText: '좀 더 생각해볼게요.'
+  }).then((result) => {
+    if (result.isConfirmed) router.push(`/home`)
   })
 }
 
