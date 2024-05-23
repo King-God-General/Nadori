@@ -65,5 +65,7 @@ create table content (
     foreign key (attraction_id) references attraction(attraction_id)
 );
 
+select * from attraction where title like "%한라산%";
+
 commit;
 

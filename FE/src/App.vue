@@ -1,35 +1,28 @@
 <script setup>
 import '@/assets/tailwind.css'
 import { RouterLink, RouterView } from 'vue-router'
-
-
-
 </script>
 
 <template>
   <div>
+    <!-- <nav class="header">
 
-    <badge type="default">Default</badge>
-
-    <!-- 네비게이션 바 -->
-    <nav class="bg-gray-800 p-4">
-      <div class="container mx-auto flex justify-between items-center">
-        <router-link to="/" class="text-white text-2xl font-semibold">Nadori</router-link>
-        <ul class="flex">
-          <li class="mr-4">
-            <router-link to="/" class="text-white">Home</router-link>
-          </li>
-          <li class="mr-4">
-            <router-link to="/about" class="text-white">About</router-link>
-          </li>
-          <li class="mr-4">
-            <router-link to="/plan" class="text-white">Plan</router-link>
-          </li>
-        </ul>
+      <div class="logoContainer">
+        <router-link to="/">
+          <img id="logo" src="@/assets/nadoriLogo2.png">
+        </router-link> 
       </div>
-    </nav>
 
-    <!-- 여행 코스 페이지 -->
+       <div v-if="memberId!=null" class="linkContainer">
+          <router-link to="/login" class="menu btn font-weight-bold">로그인</router-link>
+       </div>
+
+       <div v-else class="linkContainer">
+          <router-link to="/plan/form" class="menu btn">새로운 플랜 만들기</router-link>
+          <router-link to="/mypage" class="menu btn font-weight-bold">마이페이지</router-link>
+        </div>
+    </nav> -->
+
     <router-view></router-view>
   </div>
 </template>

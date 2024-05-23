@@ -1,12 +1,12 @@
 <script setup>
-import Plan from '@/components/Plan.vue'
+import PlanForm from '@/components/PlanForm.vue'
 import Map from '@/components/Map.vue'
 
 </script>
 
 <template>
   <div class="main">
-    <Plan class="plan"></Plan>
+    <PlanForm class="plan"></PlanForm>
     <Map class="map"></Map>
   </div>
 </template>
@@ -17,11 +17,9 @@ import Map from '@/components/Map.vue'
   flex-direction: row;
 }
 .plan {
-  width: 40%;
+  flex: 0 0 600px;
 }
-
 .map {
-  /* background-color: rgb(140, 127, 255); */
-  width: 60%;
+  width: auto;
 }
 </style>
