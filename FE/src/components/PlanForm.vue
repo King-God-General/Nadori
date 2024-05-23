@@ -3,7 +3,6 @@ import { ref, reactive, computed, watch } from 'vue'
 import '@vuepic/vue-datepicker/dist/main.css'
 import VueDatePicker from '@vuepic/vue-datepicker'
 import contentCard from '@/components/contentCard.vue'
-import { VueToggles } from 'vue-toggles'
 import { useNadoriStore } from '@/stores/nadori'
 import { storeToRefs } from 'pinia'
 import planAPI from '@/apis/plan'
@@ -16,7 +15,7 @@ const onMemoEditor = ref(false)
 const router = useRouter()
 const plan = reactive({
   planId: null,
-  writer: member,
+  writer: member.value,
   title: '',
   description: '',
   startDate: '',
