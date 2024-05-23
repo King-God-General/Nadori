@@ -6,9 +6,9 @@ import planAPI from '@/apis/plan'
 const { getPlans } = planAPI
 
 const packages = [
-  { name: '인천', price: '12,900원' },
-  { name: '송도', price: '45,900원' },
-  { name: '파주', price: '32,000원' }
+  { name: '포항스틸아트페스티벌', price: '12,900원', review: '4.9' },
+  { name: '북한산국립공원(서울)', price: '45,900원', review: '4.7' },
+  { name: '덕동계곡', price: '32,000원', review: '4.2' }
 ]
 
 // 블로그 데이터를 저장할 상태 변수
@@ -141,8 +141,8 @@ onMounted(() => {
     <section id="pack" class="packages">
       <div class="container">
         <div class="gallary-header text-center">
-          <h2 style="font-weight: bold">인기 여행지</h2>
-          <p>지금 인기있는 여행지로 떠나보아요.</p>
+          <h2 style="font-weight: bold">추천 여행지</h2>
+          <p>리뷰기반 추천 여행지로 떠나보아요.</p>
         </div>
         <div class="packages-content" id="packages-content">
           <div
@@ -151,33 +151,15 @@ onMounted(() => {
             class="single-package-item col-md-4 col-sm-6"
           >
             <img
-              :src="`src/assets/images/packages/${packageItem.name}.png`"
+              :src="`src/assets/images/packages/${packageItem.name}.jpg`"
               :alt="`${packageItem.name}-image`"
             />
             <div class="single-package-item-txt">
               <h3>
-                {{ packageItem.name }} <span class="pull-right">{{ packageItem.price }}</span>
+                {{ packageItem.name }}
+                <span class="pull-right">Rating {{ packageItem.review }}</span>
               </h3>
-              <div class="packages-para">
-                <p>
-                  <span> <i class="fa fa-angle-right"></i> 5 days 6 nights </span>
-                  <i class="fa fa-angle-right"></i> 5 star accommodation
-                </p>
-                <p>
-                  <span> <i class="fa fa-angle-right"></i> transportation </span>
-                  <i class="fa fa-angle-right"></i> food facilities
-                </p>
-              </div>
-              <div class="packages-review">
-                <p>
-                  <i class="fa fa-star"></i>
-                  <i class="fa fa-star"></i>
-                  <i class="fa fa-star"></i>
-                  <i class="fa fa-star"></i>
-                  <i class="fa fa-star"></i>
-                  <span>2544 review</span>
-                </p>
-              </div>
+
               <div class="about-btn">
                 <button class="about-view packages-btn">book now</button>
               </div>
