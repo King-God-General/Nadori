@@ -8,13 +8,16 @@ import com.ssafy.nadori.model.dto.RequestPlan;
 public interface PlanService {
 
 	//등록
-	int registerPlan(RequestPlan plan) throws Exception; 
+	int registerPlan(Plan plan) throws Exception; 
 	
 	//수정
-	int modifyPlan(RequestPlan plan) throws Exception;
+	int modifyPlan(Plan plan) throws Exception;
 	
 	//삭제
 	int removePlan(int planId) throws Exception;
+	
+	//조회
+	Plan getPlan(int planId) throws Exception;
 	
 	//조회
 	List<Plan> getPlans() throws Exception;

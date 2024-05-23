@@ -7,6 +7,7 @@
   	
 	  <resultMap type="Member" id="MemberResultMap">
 	    <id column="member_id" property="memberId"/>
+	    <result column="nickname" property="nickname"/>
 	    <result column="username" property="username"/>
 	</resultMap>
   	
@@ -16,16 +17,16 @@
 	    <result column="description" property="description"/>
 	    <result column="startDate" property="startDate"/>
 	    <result column="endDate" property="endDate"/>
-		<association property="writer" resultMap="MemberResultMap"/>	
+		<association property="writer" javaType="Member" resultMap="MemberResultMap"/>	
 	</resultMap>
   	
-  	<insert id="insertPlan" parameterType="RequestPlan" 
+  	<insert id="insertPlan" parameterType="Plan" 
   	useGeneratedKeys="true" keyProperty="planId" keyColumn="plan_id">
   		insert into plan(member_id, title, description, startDate, endDate) 
-  		values(#{memberId}, #{title}, #{description}, #{startDate}, #{endDate});
+  		values(#{writer.memberId}, #{title}, #{description}, #{startDate}, #{endDate});
   	</insert>
   	
-  	<update id="updatePlan" parameterType="RequestPlan">
+  	<update id="updatePlan" parameterType="Plan">
   		update plan 
   		set title=#{title}, description=#{description}, startDate=#{startDate}, endDate=#{endDate}
   		where plan_id=#{planId}
@@ -35,17 +36,27 @@
   		delete from plan where plan_id=#{planId}
   	</delete>
   	
+  	<delete id="deletePlans">
+  		delete from plan where member_id=#{memberId}
+  	</delete>
+  	
+  	<select id="selectPlan" parameterType="int" resultMap="PlanResultMap">
+  		select plan_id, title, description, startDate, endDate, member_id, nickname, username 
+  		from plan join member using (member_id)
+  		where plan_id=#{planId}
+  	</select>
+  	
   	<select id="selectPlans" resultMap="PlanResultMap">
-  		select plan_id, title, description, startDate, endDate, member_id, username 
+  		select plan_id, title, description, startDate, endDate, member_id, nickname, username 
   		from plan join member using (member_id)
   	</select>
   	
   	<select id="selectPlansByKeyword" parameterType="String" resultMap="PlanResultMap">
-  		select plan_id, title, description, startDate, endDate, member_id, username from plan join member using (member_id) where title LIKE CONCAT('%',#{keyword},'%')
+  		select plan_id, title, description, startDate, endDate, member_id, nickname, username from plan join member using (member_id) where title LIKE CONCAT('%',#{keyword},'%')
   	</select>
   	
   	<select id="selectPlansByUsername" parameterType="String" resultMap="PlanResultMap">
-  		select plan_id, title, description, startDate, endDate, member_id, username from plan join member using (member_id) where username=#{username}
+  		select plan_id, title, description, startDate, endDate, member_id, nickname, username from plan join member using (member_id) where username=#{username}
   	</select>
   	
 </mapper>
