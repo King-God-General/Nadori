@@ -1,5 +1,11 @@
 <script setup>
 import { defineProps, defineEmits } from 'vue'
+import { useNadoriStore } from '@/stores/nadori'
+import { storeToRefs } from 'pinia'
+
+const store = useNadoriStore()
+const { member, plan, planDetail, curDayNum } = storeToRefs(store)
+
 const item = defineProps(['item'])
 const emit = defineEmits(['close'])
 

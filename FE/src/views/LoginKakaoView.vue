@@ -14,15 +14,15 @@ onMounted(() => {
   MemberAPI.loginOrSignUp(
     route.query.code,
     (response) => {
-      console.log('인가 코드를 서버로 전달하는데 성공했습니다. :'+response.data)
-      
-      member.memberId=response.data.memberId;
-      member.nickname=response.data.nickname;
-      member.username=response.data.username;
-      
-      console.log(member);
+      console.log('인가 코드를 서버로 전달하는데 성공했습니다. :' + response.data)
 
-      router.push(`/mypage`);
+      member.memberId = response.data.memberId
+      member.nickname = response.data.nickname
+      member.username = response.data.username
+
+      console.log(member)
+
+      router.push(`/mypage`)
     },
     () => {
       console.log('인가 코드를 서버로 전달하는데 실패했습니다.')

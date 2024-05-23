@@ -10,7 +10,6 @@ import lombok.ToString;
 @Getter
 @Setter
 @ToString
-@Data
 public class Plan {
 	private int planId;
 	
@@ -23,4 +22,5 @@ public class Plan {
 	private LocalDate startDate;
 	
 	private LocalDate endDate;
+	
 }

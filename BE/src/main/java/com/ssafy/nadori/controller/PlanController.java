@@ -51,7 +51,7 @@ public class PlanController {
 	}
 	
 	@PostMapping
-	protected ResponseEntity<Integer> postPlan(@RequestBody RequestPlan plan) throws Exception{
+	protected ResponseEntity<Integer> postPlan(@RequestBody Plan plan) throws Exception{
 		System.out.print(plan.toString());
 		
 		return new ResponseEntity<Integer>(planService.registerPlan(plan), HttpStatus.OK);
@@ -63,13 +63,18 @@ public class PlanController {
 	}
 	
 	@PutMapping
-	protected ResponseEntity<Integer> putPlan(@RequestBody RequestPlan plan) throws Exception{
+	protected ResponseEntity<Integer> putPlan(@RequestBody Plan plan) throws Exception{
 		return new ResponseEntity<Integer>(planService.modifyPlan(plan), HttpStatus.OK);
 	}
 	
 	@GetMapping("/contents/{planId}")
 	protected ResponseEntity<List<Content>> getContentList(@PathVariable int planId) throws Exception {
 	    return new ResponseEntity<List<Content>>(contentService.getContents(planId), HttpStatus.OK);
+	}
+	
+	@DeleteMapping("/contents/{planId}")
+	protected ResponseEntity<Integer> deleteContents(@PathVariable int planId) throws Exception{
+		return new ResponseEntity<Integer>(contentService.removeContents(planId), HttpStatus.OK);
 	}
 	
 	@PostMapping("/contents/{planId}")

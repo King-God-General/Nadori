@@ -3,6 +3,7 @@ import HomeView from '@/views/HomeView.vue'
 import MyPageView from '@/views/MyPageView.vue'
 import PlanDetailView from '@/views/PlanDetailView.vue'
 import PlanFormView from '@/views/PlanFormView.vue'
+import PlanModifyView from '@/views/PlanModifyView.vue'
 import LoginKakaoView from '@/views/LoginKakaoView.vue'
 
 const router = createRouter({
@@ -37,7 +38,7 @@ const router = createRouter({
     {
       path: '/plan/form/:planId',
       name: 'planModify',
-      component: PlanFormView,
+      component: PlanModifyView,
       props: true
     },
     {

@@ -23,13 +23,13 @@ public class PlanServiceImpl implements PlanService{
 	}
 	
 	@Override
-	public int registerPlan(RequestPlan plan) throws Exception {
+	public int registerPlan(Plan plan) throws Exception {
 		planDao.insertPlan(plan);
 		return plan.getPlanId();
 	}
 
 	@Override
-	public int modifyPlan(RequestPlan plan) throws Exception {
+	public int modifyPlan(Plan plan) throws Exception {
 		return planDao.updatePlan(plan);
 	}
 	
