@@ -187,7 +187,7 @@ onMounted(() => {
                     trending news <span>{{ blog.date }}</span>
                   </h2>
                   <div class="thumbnail-img">
-                    <img :src="`src/assets/images/blog/magazine.jpg`" alt="blog-img" />
+                    <img :src="`src/assets/images/blog/${blog.title}.jpg`" alt="blog-img" />
                     <div class="thumbnail-img-overlay"></div>
                   </div>
                   <div class="caption">
