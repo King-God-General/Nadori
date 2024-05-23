@@ -1,28 +1,23 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import HomeView from '@/views/HomeView.vue'
-import LoginView from '@/views/LoginView.vue'
-import SignUpView from '@/views/SignUpView.vue'
 import MyPageView from '@/views/MyPageView.vue'
 import PlanDetailView from '@/views/PlanDetailView.vue'
 import PlanFormView from '@/views/PlanFormView.vue'
+import PlanModifyView from '@/views/PlanModifyView.vue'
+import LoginKakaoView from '@/views/LoginKakaoView.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
     {
       path: '/',
-      name: 'home',
+      name: 'origin',
       component: HomeView
     },
     {
-      path: '/login',
-      name: 'login',
-      component: LoginView
-    },
-    {
-      path: '/signup',
-      name: 'signup',
-      component: SignUpView
+      path: '/home',
+      name: 'home',
+      component: HomeView
     },
     {
       path: '/mypage',
@@ -32,12 +27,24 @@ const router = createRouter({
     {
       path: '/plan/detail/:planId',
       name: 'planDetail',
-      component: PlanDetailView
+      component: PlanDetailView,
+      props: true
     },
     {
       path: '/plan/form',
       name: 'planForm',
-      component: PlanFormView
+      component: PlanFormView,
+    },
+    {
+      path: '/plan/form/:planId',
+      name: 'planModify',
+      component: PlanModifyView,
+      props: true
+    },
+    {
+      path: '/login/kakao',
+      name: 'loginKakao',
+      component: LoginKakaoView
     }
   ]
 })

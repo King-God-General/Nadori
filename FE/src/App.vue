@@ -1,6 +1,23 @@
 <script setup>
 import '@/assets/tailwind.css'
 import { RouterLink, RouterView } from 'vue-router'
+
+import { useNadoriStore } from '@/stores/nadori'
+import { storeToRefs } from 'pinia'
+import { useRouter } from 'vue-router'
+
+const router = useRouter()
+const nadoriStore = useNadoriStore()
+const { member } = storeToRefs(nadoriStore)
+
+const login = () => {
+  member.value = {
+    memberId: '3',
+    nickname: 'General',
+    username: 'GeneralUser'
+  }
+  router.push('/mypage')
+}
 </script>
 
 <template>
@@ -28,3 +45,45 @@ import { RouterLink, RouterView } from 'vue-router'
 </template>
 
 <style scoped></style>
+
+<style scoped>
+.header {
+  background-color: rgb(255, 210, 57);
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 50px;
+}
+
+#logo {
+  width: 100px;
+  height: 100px;
+}
+
+.linkContainer {
+  display: flex;
+  flex-direction: row;
+}
+
+.menu {
+  text-decoration-line: none;
+  font-size: 1.1em;
+  font-weight: bolder;
+  margin-right: 10px;
+  color: rgb(24, 42, 57);
+  padding: 5px;
+  border-radius: 10px;
+}
+
+.button {
+  background-color: rgb(247, 162, 0);
+  color: rgba(255, 255, 255);
+  font-size: 0.9em;
+  font-weight: bolder;
+  border-radius: 10px;
+  padding: 8px;
+  margin-top: 10px;
+  margin-right: 5px;
+}
+</style>
