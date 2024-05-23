@@ -61,6 +61,7 @@ onMounted(() => {
 
 <style scoped>
 .page {
+  padding-top: 100px;
   margin: 20px;
   display: flex;
   flex-direction: column;

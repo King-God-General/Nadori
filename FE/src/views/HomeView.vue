@@ -1,10 +1,9 @@
 <script setup>
 import { useNadoriStore } from '@/stores/nadori'
 import { storeToRefs } from 'pinia'
-import { onMounted } from 'vue'
 import '@/assets/tailwind.css'
 
-import { RouterLink, RouterView } from 'vue-router'
+import { useRouter, RouterLink, RouterView } from 'vue-router'
 import { ref, onMounted } from 'vue'
 import planAPI from '@/apis/plan'
 const { getPlans } = planAPI
@@ -15,12 +14,24 @@ const packages = [
   { name: '덕동계곡', price: '32,000원', review: '4.2' }
 ]
 
+const nadoriStore = useNadoriStore()
+const { plan, planDetail, curDayNum } = storeToRefs(nadoriStore)
+const router = useRouter()
+const moveToDetail = () => {
+  router.push(`/plan/detail/3`)
+}
+onMounted(() => {
+  plan.value = null
+  planDetail.value = null
+  curDayNum.value = 1
+})
+
 // 블로그 데이터를 저장할 상태 변수
 const blogs = ref([])
 
 // API 호출 및 데이터 처리
 onMounted(() => {
-  getPlans(
+  planAPI.getPlans(
     (response) => {
       blogs.value = response.data
       console.log(blogs.value)
@@ -29,92 +40,10 @@ onMounted(() => {
       console.error('API 호출 실패:', error)
     }
   )
-
-import { useRouter } from 'vue-router'
-const nadoriStore = useNadoriStore()
-const { plan, planDetail, curDayNum } = storeToRefs(nadoriStore)
-const router = useRouter()
-const moveToDetail = () => {
-  router.push(`/plan/detail/3`)
-}
-onMounted(()=>{
-  plan.value=null
-  planDetail.value=null
-  curDayNum.value=1
-
 })
 </script>
 
 <template>
-
-  <div class="header top-area">
-    <!-- main-menu Start -->
-
-    <div class="header-area">
-      <div class="container">
-        <div class="row">
-          <div class="col-sm-2">
-            <div class="logo">
-              <!-- <router-link to="/">
-                <img id="logo" src="@/assets/nadoriLogo2.png" />
-              </router-link> -->
-              <a href="/">
-                <img id="logo" src="@/assets/nadoriLogo2.png" />
-              </a>
-            </div>
-            <!-- /.logo-->
-          </div>
-          <!-- /.col-->
-          <div class="col-sm-10">
-            <div class="main-menu">
-              <!-- Brand and toggle get grouped for better mobile display -->
-              <div class="navbar-header">
-                <button
-                  type="button"
-                  class="navbar-toggle"
-                  data-toggle="collapse"
-                  data-target=".navbar-collapse"
-                >
-                  <i class="fa fa-bars"></i></button
-                ><!-- / button-->
-              </div>
-              <!-- /.navbar-header-->
-              <div class="navbar-collapse">
-                <ul class="nav navbar-nav navbar-right" style="flex-direction: row">
-                  <li class="smooth-menu" style="top: 10px"><a href="#home">home</a></li>
-                  <!-- <li class="smooth-menu"><a href="#gallery">Destination</a></li> -->
-                  <li class="smooth-menu" style="top: 10px"><a href="#pack">Packages </a></li>
-                  <!-- <li class="smooth-menu"><a href="#spo">Special Offers</a></li> -->
-                  <li class="smooth-menu" style="top: 10px"><a href="#blog">blog</a></li>
-                  <li class="smooth-menu" style="top: 10px">
-                    <router-link to="/mypage">My Page</router-link>
-                  </li>
-                  <li>
-                    <router-link to="/plan/form">
-                      <button class="book-btn">book now</button>
-                    </router-link>
-                  </li>
-                  <!--/.project-btn-->
-                </ul>
-              </div>
-              <!-- /.navbar-collapse -->
-            </div>
-            <!-- /.main-menu-->
-          </div>
-          <!-- /.col-->
-        </div>
-        <!-- /.row -->
-        <div class="home-border"></div>
-        <!-- /.home-border-->
-      </div>
-      <!-- /.container-->
-    </div>
-    <!-- /.header-area -->
-
-    <!-- /.top-area-->
-    <!-- main-menu End -->
-  </div>
-
   <div class="section">
     <!--about-us start -->
     <section id="home" class="about-us">
@@ -157,7 +86,16 @@ onMounted(()=>{
 
     <!--packages start-->
     <section id="pack" class="packages">
-      <div class="container">
+      <div
+        class="container"
+        style="
+          display: flex;
+          flex-wrap: wrap;
+          place-content: stretch center;
+          align-content: center;
+          flex-direction: column;
+        "
+      >
         <div class="gallary-header text-center">
           <h2 style="font-weight: bold">추천 여행지</h2>
           <p>리뷰기반 추천 여행지로 떠나보아요.</p>
@@ -167,6 +105,7 @@ onMounted(()=>{
             v-for="packageItem in packages"
             :key="packageItem.name"
             class="single-package-item col-md-4 col-sm-6"
+            style="width: 400px; margin: 0px 10px"
           >
             <img
               :src="`src/assets/images/packages/${packageItem.name}.jpg`"
@@ -190,7 +129,10 @@ onMounted(()=>{
 
     <!--blog start-->
     <section id="blog" class="blog">
-      <div class="container">
+      <div
+        class="container"
+        style="display: flex; flex-wrap: wrap; align-content: stretch; justify-content: center"
+      >
         <div class="blog-details">
           <div class="gallary-header text-center">
             <h2 style="font-weight: bold">나도리 매거진</h2>
@@ -198,8 +140,13 @@ onMounted(()=>{
           </div>
           <!--/.gallery-header-->
           <div class="blog-content">
-            <div class="row" id="blog-rows">
-              <div v-for="blog in blogs" :key="blog.title" class="col-sm-4 col-md-4">
+            <div class="row" id="blog-rows" style="display: flex; justify-content: center">
+              <div
+                v-for="blog in blogs"
+                :key="blog.title"
+                class="col-sm-4 col-md-4"
+                style="width: 400px"
+              >
                 <div class="thumbnail">
                   <h2>
                     trending news <span>{{ blog.date }}</span>
@@ -356,13 +303,12 @@ onMounted(()=>{
     </footer>
     <!-- /.footer-copyright-->
     <!-- footer-copyright end -->
-
+  </div>
   <div class="container mx-auto mt-8">
     <h1 class="text-3xl font-semibold mb-4">Welcome to Travel App</h1>
     <p class="text-lg">Check out our amazing travel courses!</p>
 
     <button @click="moveToDetail">상세페이지</button>
-
   </div>
 </template>
 

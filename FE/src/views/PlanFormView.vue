@@ -11,6 +11,7 @@ import Map from '@/components/Map.vue'
 </template>
 <style scoped>
 .main {
+  padding-top: 100px;
   display: flex;
   flex-direction: row;
 }
