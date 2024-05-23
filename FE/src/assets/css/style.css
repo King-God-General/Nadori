@@ -274,7 +274,7 @@ body {
 .home-border {
   border-top: 2px solid #fff;
   position: relative;
-  top: -5px;
+  /* top: -5px; */
 }
 
 /*book-btn*/
