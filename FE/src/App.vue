@@ -1,6 +1,7 @@
 <script setup>
 import '@/assets/tailwind.css'
 import { RouterLink, RouterView } from 'vue-router'
+
 import { useNadoriStore } from '@/stores/nadori'
 import { storeToRefs } from 'pinia'
 import { useRouter } from 'vue-router'
@@ -21,26 +22,29 @@ const login = () => {
 
 <template>
   <div>
-    <nav class="header">
+    <!-- <nav class="header">
+
       <div class="logoContainer">
-        <router-link to="/home">
-          <img id="logo" src="@/assets/nadoriLogo2.png" />
-        </router-link>
+        <router-link to="/">
+          <img id="logo" src="@/assets/nadoriLogo2.png">
+        </router-link> 
       </div>
 
-      <div v-if="member === null" class="linkContainer">
-        <button class="menu" @click="login">로그인</button>
-      </div>
+       <div v-if="memberId!=null" class="linkContainer">
+          <router-link to="/login" class="menu btn font-weight-bold">로그인</router-link>
+       </div>
 
-      <div v-else class="linkContainer">
-        <router-link to="/plan/form" class="menu btn">새로운 플랜 만들기</router-link>
-        <router-link to="/mypage" class="menu btn font-weight-bold">마이페이지</router-link>
-      </div>
-    </nav>
+       <div v-else class="linkContainer">
+          <router-link to="/plan/form" class="menu btn">새로운 플랜 만들기</router-link>
+          <router-link to="/mypage" class="menu btn font-weight-bold">마이페이지</router-link>
+        </div>
+    </nav> -->
 
     <router-view></router-view>
   </div>
 </template>
+
+<style scoped></style>
 
 <style scoped>
 .header {
