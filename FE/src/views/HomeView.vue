@@ -2,115 +2,33 @@
 import '@/assets/tailwind.css'
 import { RouterLink, RouterView } from 'vue-router'
 import { ref, onMounted } from 'vue'
+import planAPI from '@/apis/plan'
+const { getPlans } = planAPI
 
-// const packages = [
-//   { name: 'italy', price: '$499' },
-//   { name: 'england', price: '$1499' },
-//   { name: 'france', price: '$1199' },
-//   { name: 'india', price: '$799' },
-//   { name: 'spain', price: '$999' },
-//   { name: 'thailand', price: '$799' }
-// ]
+const packages = [
+  { name: 'italy', price: '$499' },
+  { name: 'england', price: '$1499' },
+  { name: 'france', price: '$1199' },
+  { name: 'india', price: '$799' },
+  { name: 'spain', price: '$999' },
+  { name: 'thailand', price: '$799' }
+]
 
-// const packagesContent = ref(null)
+// 블로그 데이터를 저장할 상태 변수
+const blogs = ref([])
 
-// onMounted(() => {
-//   // packages-content 요소 가져오기
-//   packagesContent.value = document.getElementById('packages-content')
-
-//   // 배열 순회하며 각 패키지 정보를 동적으로 생성하여 packages-content에 추가
-//   packages.forEach((packageItem) => {
-//     // 새로운 패키지 요소 생성
-//     const packageElement = document.createElement('div')
-//     packageElement.classList.add('col-md-4', 'col-sm-6')
-//     packageElement.innerHTML = `
-//         <div class="single-package-item">
-//           <img src="assets/images/packages/${packageItem.name}.png" alt="package-place" />
-//           <div class="single-package-item-txt">
-//             <h3>${packageItem.name} <span class="pull-right">${packageItem.price}</span></h3>
-//             <div class="packages-para">
-//               <p>
-//                 <span> <i class="fa fa-angle-right"></i> 5 days 6 nights </span>
-//                 <i class="fa fa-angle-right"></i> 5 star accommodation
-//               </p>
-//               <p>
-//                 <span> <i class="fa fa-angle-right"></i> transportation </span>
-//                 <i class="fa fa-angle-right"></i> food facilities
-//               </p>
-//             </div>
-//             <div class="packages-review">
-//               <p>
-//                 <i class="fa fa-star"></i>
-//                 <i class="fa fa-star"></i>
-//                 <i class="fa fa-star"></i>
-//                 <i class="fa fa-star"></i>
-//                 <i class="fa fa-star"></i>
-//                 <span>2544 review</span>
-//               </p>
-//             </div>
-//             <div class="about-btn">
-//               <button class="about-view packages-btn">book now</button>
-//             </div>
-//           </div>
-//         </div>
-//       `
-//     // 패키지 요소를 packages-content에 추가
-//     packagesContent.value.appendChild(packageElement)
-//   })
-// })
-
-// const blogs = [
-//   {
-//     date: '15 november 2017',
-//     imgSrc: 'assets/images/blog/magazine.jpg',
-//     title: "Let's Goooooooooooo",
-//     description:
-//       'Lorem ipsum dolor sit amet, contur adip elit, sed do mod incid ut labore et dolore magna aliqua. Ut enim ad minim veniam',
-//     link: '#'
-//   },
-//   {
-//     date: '15 november 2017',
-//     imgSrc: 'assets/images/blog/magazine.jpg',
-//     title: 'Discover on beautiful weather, Fantastic foods and historical place in india',
-//     description:
-//       'Lorem ipsum dolor sit amet, contur adip elit, sed do mod incid ut labore et dolore magna aliqua. Ut enim ad minim veniam',
-//     link: '#'
-//   },
-//   {
-//     date: '15 november 2017',
-//     imgSrc: 'assets/images/blog/magazine.jpg',
-//     title: '10 Most Natural place to Discover',
-//     description:
-//       'Lorem ipsum dolor sit amet, contur adip elit, sed do mod incid ut labore et dolore magna aliqua. Ut enim ad minim veniam',
-//     link: '#'
-//   }
-// ]
-
-// const blogRows = document.getElementById('blog-rows')
-
-// blogs.forEach((blog) => {
-//   const col = document.createElement('div')
-//   col.className = 'col-sm-4 col-md-4'
-
-//   col.innerHTML = `
-//         <div class="thumbnail">
-//           <h2>trending news <span>${blog.date}</span></h2>
-//           <div class="thumbnail-img">
-//             <img src="${blog.imgSrc}" alt="blog-img" />
-//             <div class="thumbnail-img-overlay"></div>
-//           </div>
-//           <div class="caption">
-//             <div class="blog-txt">
-//               <h3><a href="${blog.link}">${blog.title}</a></h3>
-//               <p>${blog.description}</p>
-//               <a href="${blog.link}">Read More</a>
-//             </div>
-//           </div>
-//         </div>
-//       `
-
-//   blogRows.appendChild(col)
-// })
+// API 호출 및 데이터 처리
+onMounted(() => {
+  getPlans(
+    (response) => {
+      blogs.value = response.data
+      console.log(blogs.value)
+    },
+    (error) => {
+      console.error('API 호출 실패:', error)
+    }
+  )
+})
 </script>
 
 <template>
@@ -227,7 +145,46 @@ import { ref, onMounted } from 'vue'
           <h2 style="font-weight: bold">인기 여행지</h2>
           <p>지금 인기있는 여행지로 떠나보아요.</p>
         </div>
-        <div class="packages-content" id="packages-content"></div>
+        <div class="packages-content" id="packages-content">
+          <div
+            v-for="packageItem in packages"
+            :key="packageItem.name"
+            class="single-package-item col-md-4 col-sm-6"
+          >
+            <img
+              :src="`src/assets/images/packages/${packageItem.name}.png`"
+              :alt="`${packageItem.name}-image`"
+            />
+            <div class="single-package-item-txt">
+              <h3>
+                {{ packageItem.name }} <span class="pull-right">{{ packageItem.price }}</span>
+              </h3>
+              <div class="packages-para">
+                <p>
+                  <span> <i class="fa fa-angle-right"></i> 5 days 6 nights </span>
+                  <i class="fa fa-angle-right"></i> 5 star accommodation
+                </p>
+                <p>
+                  <span> <i class="fa fa-angle-right"></i> transportation </span>
+                  <i class="fa fa-angle-right"></i> food facilities
+                </p>
+              </div>
+              <div class="packages-review">
+                <p>
+                  <i class="fa fa-star"></i>
+                  <i class="fa fa-star"></i>
+                  <i class="fa fa-star"></i>
+                  <i class="fa fa-star"></i>
+                  <i class="fa fa-star"></i>
+                  <span>2544 review</span>
+                </p>
+              </div>
+              <div class="about-btn">
+                <button class="about-view packages-btn">book now</button>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
     </section>
     <!--packages end-->
@@ -242,7 +199,28 @@ import { ref, onMounted } from 'vue'
           </div>
           <!--/.gallery-header-->
           <div class="blog-content">
-            <div class="row" id="blog-rows"></div>
+            <div class="row" id="blog-rows">
+              <div v-for="blog in blogs" :key="blog.title" class="col-sm-4 col-md-4">
+                <div class="thumbnail">
+                  <h2>
+                    trending news <span>{{ blog.date }}</span>
+                  </h2>
+                  <div class="thumbnail-img">
+                    <img :src="`src/assets/images/blog/magazine.jpg`" alt="blog-img" />
+                    <div class="thumbnail-img-overlay"></div>
+                  </div>
+                  <div class="caption">
+                    <div class="blog-txt">
+                      <h3>
+                        <a :href="blog.link">{{ blog.title }}</a>
+                      </h3>
+                      <p>{{ blog.description }}</p>
+                      <a :href="blog.link">Read More</a>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
             <!--/.row-->
           </div>
           <!--/.blog-content-->
