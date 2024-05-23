@@ -6,12 +6,9 @@ import planAPI from '@/apis/plan'
 const { getPlans } = planAPI
 
 const packages = [
-  { name: 'italy', price: '$499' },
-  { name: 'england', price: '$1499' },
-  { name: 'france', price: '$1199' },
-  { name: 'india', price: '$799' },
-  { name: 'spain', price: '$999' },
-  { name: 'thailand', price: '$799' }
+  { name: '인천', price: '12,900원' },
+  { name: '송도', price: '45,900원' },
+  { name: '파주', price: '32,000원' }
 ]
 
 // 블로그 데이터를 저장할 상태 변수
@@ -71,7 +68,9 @@ onMounted(() => {
                   <li class="smooth-menu" style="top: 10px"><a href="#pack">Packages </a></li>
                   <!-- <li class="smooth-menu"><a href="#spo">Special Offers</a></li> -->
                   <li class="smooth-menu" style="top: 10px"><a href="#blog">blog</a></li>
-                  <li class="smooth-menu" style="top: 10px"><a href="#subs">subscription</a></li>
+                  <li class="smooth-menu" style="top: 10px">
+                    <router-link to="/mypage">My Page</router-link>
+                  </li>
                   <li>
                     <router-link to="/plan/form">
                       <button class="book-btn">book now</button>
