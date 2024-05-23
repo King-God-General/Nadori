@@ -8,6 +8,7 @@ import contentCard from '@/components/contentCard.vue'
 import contentAPI from '@/apis/content'
 import planAPI from '@/apis/plan'
 import Swal from 'sweetalert2'
+import PlanFormView from './PlanFormView.vue'
 
 const router = useRouter()
 const store = useNadoriStore()
@@ -128,6 +129,23 @@ const removePlan = () => {
   })
 }
 
+const transformPlanDetail = () => {
+  const result = []
+  Object.keys(planDetail.value).forEach((dayNum) => {
+    planDetail.value[dayNum].plan.forEach((item, index) => {
+      const transformedItem = {
+        contentId: null,
+        dayNum: parseInt(dayNum),
+        contentNum: index + 1,
+        memo: item.type === 'memo' ? item.content : null,
+        attraction: item.type === 'attraction' ? item.content : null
+      }
+      result.push(transformedItem)
+    })
+  })
+  return result
+}
+
 //플랜 삭제
 const copyPlan = () => {
   Swal.fire({
@@ -137,10 +155,37 @@ const copyPlan = () => {
     showCancelButton: true,
     confirmButtonColor: '#f7a200',
     cancelButtonColor: '#f7a200',
-    confirmButtonText: '네!',
+    confirmButtonText: '복사할게요!',
     cancelButtonText: '좀 더 생각해볼게요.'
   }).then((result) => {
-    if (result.isConfirmed) router.push(`/home`)
+    if (result.isConfirmed) {
+      plan.value.writer = member.value
+
+      planAPI.postPlan(
+        plan.value,
+        (response) => {
+          plan.value.planId = response.data
+          contentAPI.postContents(
+            plan.value.planId,
+            transformPlanDetail(),
+            () => {
+              Swal.fire({
+                icon: 'success',
+                confirmButtonColor: '#f7a200',
+                text: '성공적으로 복사되었어요!'
+              })
+              router.push(`/plan/form/${plan.value.planId}`)
+            },
+            () => {
+              console.log('현재 플랜에 대한 콘텐츠 복사에 실패했습니다.')
+            }
+          )
+        },
+        () => {
+          console.log('플랜 저장에 실패했습니다.')
+        }
+      )
+    }
   })
 }
 
@@ -195,8 +240,6 @@ onMounted(() => {
       console.log('플랜에 대한 콘텐츠를 불러오는 데 실패했습니다.')
     }
   )
-
-  console.log('후: ' + props.planId)
 })
 </script>
 
@@ -212,28 +255,46 @@ onMounted(() => {
           </div>
 
           <div class="dayNavContainer">
-            <input class="dayButton" type="button" v-for="day in dayCnt" :key="day" :value="'Day ' + day"
-              @click="changeCurDayNum(day)" :class="{ selectedDayButton: curDayNum === day }" />
+            <input
+              class="dayButton"
+              type="button"
+              v-for="day in dayCnt"
+              :key="day"
+              :value="'Day ' + day"
+              @click="changeCurDayNum(day)"
+              :class="{ selectedDayButton: curDayNum === day }"
+            />
           </div>
 
           <div class="contentContainer">
             <div class="contentsContainer overflow-auto">
-              <contentCard v-for="item in planDetail[curDayNum].plan" :key="item.type == 'memo'
-                ? item.type + item.content
-                : item.type + item.content.attractionId
-                " :item="item" @click="clickAttractionCard(item)">
+              <contentCard
+                v-for="item in planDetail[curDayNum].plan"
+                :key="
+                  item.type == 'memo'
+                    ? item.type + item.content
+                    : item.type + item.content.attractionId
+                "
+                :item="item"
+                @click="clickAttractionCard(item)"
+              >
               </contentCard>
             </div>
           </div>
 
           <div class="buttonNavContainer">
-            <div v-if="member.memberId == plan.writer.memberId">
+            <div v-if="member != null && member.memberId == plan.writer.memberId">
               <button class="button" @click="modifyPlan">수정하기</button>
               <button class="button" @click="removePlan">삭제하기</button>
             </div>
 
-
-            <button v-if="member.memberId != plan.writer.memberId" class="button">복사하기</button>
+            <button
+              v-else-if="member != null && member.memberId != plan.writer.memberId"
+              class="button"
+              @click="copyPlan"
+            >
+              복사하기
+            </button>
           </div>
         </div>
       </div>
@@ -242,7 +303,11 @@ onMounted(() => {
     <div class="map">
       <div class="page">
         <div class="mapContainer">
-          <naver-map style="width: 1600px; height: 1300px" :map-options="mapOptions" @on-load="onLoadMap($event)">
+          <naver-map
+            style="width: 1600px; height: 1300px"
+            :map-options="mapOptions"
+            @on-load="onLoadMap($event)"
+          >
             <div v-for="item in curDayAttraction" :key="item.attractionId">
               <naver-marker :latitude="item.latitude" :longitude="item.longitude" />
             </div>
@@ -298,8 +363,8 @@ onMounted(() => {
 
 .headerContainer {
   padding: 20px;
-  border-radius: 0px 25px;
-  background: linear-gradient(to top left, rgb(248, 223, 142), rgb(252, 166, 7));
+  border-radius: 25px 0px;
+  background: linear-gradient(to bottom left, rgb(247, 209, 86), rgb(247, 162, 0));
   color: white;
 }
 
@@ -341,13 +406,13 @@ onMounted(() => {
 
 .contentContainer {
   padding: 30px;
-  border-radius: 25px 0px;
+  border-radius: 0px 25px;
   height: auto;
-  background: linear-gradient(50deg, rgb(248, 224, 145), rgb(247, 162, 0));
+  background: linear-gradient(to bottom left, rgb(247, 209, 86), rgb(247, 162, 0));
 }
 
 .dayNavContainer {
-  margin: 20px 0px 10px 20px;
+  margin: 8px 0px 8px 20px;
 }
 
 .dayButton {

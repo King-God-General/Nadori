@@ -1,5 +1,5 @@
 <script setup>
-import { ref, computed, watch, onMounted } from 'vue'
+import { ref, computed, watch } from 'vue'
 import '@vuepic/vue-datepicker/dist/main.css'
 import VueDatePicker from '@vuepic/vue-datepicker'
 import contentCard from '@/components/contentCard.vue'

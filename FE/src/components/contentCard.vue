@@ -1,10 +1,5 @@
 <script setup>
 import { defineProps, defineEmits } from 'vue'
-import { useNadoriStore } from '@/stores/nadori'
-import { storeToRefs } from 'pinia'
-
-const store = useNadoriStore()
-const { member, plan, planDetail, curDayNum } = storeToRefs(store)
 
 const item = defineProps(['item'])
 const emit = defineEmits(['close'])
@@ -41,13 +36,13 @@ function handleClose() {
         </svg>
       </button>
       <textarea
-        class="form-control memoEditor"
+        class="form-control memoCardEditor"
         name="memo"
         id="memo"
         cols="55"
-        rows="auto"
         :value="content"
-        read
+        readonly="readonly"
+        style="max-height: 200px; overflow: hidden"
       ></textarea>
     </div>
   </div>
@@ -95,12 +90,6 @@ p {
   flex-direction: row;
 }
 
-.memoEditor {
-  border: none;
-  resize: none;
-  font-size: 0.8em;
-}
-
 .memo {
   background-color: white;
   padding-left: 10px;
@@ -125,6 +114,7 @@ img {
 
 .svgCloseButton {
   margin: 8px 8px auto auto;
+  fill: rgb(196, 194, 194);
 }
 
 .buttonAndDataContainer {
@@ -138,5 +128,10 @@ img {
   display: flex;
   flex-direction: column;
   justify-content: center;
+}
+
+.memoCardEditor {
+  all: unset;
+  padding: 20px;
 }
 </style>

@@ -3,44 +3,20 @@ import '@/assets/tailwind.css'
 import { RouterLink, RouterView } from 'vue-router'
 import { useNadoriStore } from '@/stores/nadori'
 import { storeToRefs } from 'pinia'
-import MemberAPI from '@/apis/member'
 import { useRouter } from 'vue-router'
 
-const { VITE_KAKAO_API_KEY, VITE_KAKAO_REDIRECT_URL } = import.meta.env
 const router = useRouter()
 const nadoriStore = useNadoriStore()
 const { member } = storeToRefs(nadoriStore)
 
-const doKakaoLogin = () => {
-  // const url =
-  //   'https://kauth.kakao.com/oauth/authorize?client_id=' +
-  //   VITE_KAKAO_API_KEY +
-  //   '&redirect_uri=' +
-  //   VITE_KAKAO_REDIRECT_URL +
-  //   '&response_type=code&scope=profile_nickname'
-  // window.location.href = url
-
-  member.value={
-    memberId: "1",
-    nickname: "King",
-    username: "KingUser"
+const login = () => {
+  member.value = {
+    memberId: '3',
+    nickname: 'General',
+    username: 'GeneralUser'
   }
-  console.log(member.value)
-
-  router.push("/mypage")
+  router.push('/mypage')
 }
-const doKakaoLogout = () => {
-  // MemberAPI.logout(member.memberId,
-  //   ()=>{
-  //     console.log('로그아웃에 성공했습니다.')
-  //   },
-  //   ()=>{
-  //     console.log('로그아웃에 실패했습니다.')
-  //   }
-  // )
-
-}
-
 </script>
 
 <template>
@@ -52,8 +28,8 @@ const doKakaoLogout = () => {
         </router-link>
       </div>
 
-      <div v-if="member===null" class="linkContainer">
-        <button class="menu" @click="doKakaoLogin">로그인</button>
+      <div v-if="member === null" class="linkContainer">
+        <button class="menu" @click="login">로그인</button>
       </div>
 
       <div v-else class="linkContainer">
