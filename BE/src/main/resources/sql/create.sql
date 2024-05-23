@@ -34,18 +34,15 @@ drop table if exists member;
 
 -- member 테이블 생성
 create table member (
-    member_id int primary key auto_increment,
-    email varchar(20) not null,
-    password varchar(20) not null,
-    username varchar(20) not null,
-    gender boolean,
-    birthdate datetime
+    member_id varchar(20) primary key,
+    nickname varchar(20) not null,
+    username varchar(20) not null
 );
 
 -- plan 테이블 생성
 create table plan (
     plan_id int primary key auto_increment,
-    member_id int not null,
+    member_id varchar(20) not null,
     title varchar(100) not null,
     description varchar(500),
     startDate datetime not null,

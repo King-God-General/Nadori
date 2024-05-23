@@ -2,6 +2,9 @@ import { NadoriAxios } from "@/utils/axios";
 
 const planAPI= NadoriAxios()
 
+const getPlan = (planId, success, fail) => {
+    planAPI.get(`api/plan/${planId}`).then(success).catch(fail)
+}
 const getPlans = (success, fail) => {
     planAPI.get('api/plan').then(success).catch(fail)
 }
@@ -22,6 +25,6 @@ const deletePlan = (planId, success, fail) => {
 }
 
 export default {
-    getPlans, getPlansByKeyword, getPlansByUsername,
+    getPlan, getPlans, getPlansByKeyword, getPlansByUsername,
     postPlan, putPlan, deletePlan
 }

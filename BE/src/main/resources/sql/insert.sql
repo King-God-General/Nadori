@@ -13,19 +13,18 @@ delete from member;
 -- 안전 모드 다시 활성화
 SET SQL_SAFE_UPDATES = 1;
 
-
 -- 더미 데이터 삽입을 위한 기본 데이터
 -- member 테이블에 더미 데이터 삽입
-insert into member (member_id, email, password, username, gender, birthdate) values
-(1, 'king@example.com', '123', 'King', true, '1990-01-01'),
-(2, 'god@example.com', '456', 'God', false, '1985-05-15'),
-(3, 'general@example.com', '789', 'General', true, '1992-09-23');
+insert into member (member_id, nickname, username) values
+('1', 'King', 'KingUser'),
+('2', 'God', 'GodUser'),
+('3', 'General', 'GeneralUser');
 
 -- plan 테이블에 더미 데이터 삽입
 insert into plan (plan_id, title, description, startDate, endDate, member_id) values
-(1, '제주도', '자바자바 MT 가보자고', '2024-06-01', '2024-06-04', 1),
-(2, '서울', '', '2024-07-30', '2024-08-06', 1),
-(3, '대전', '빵순이들의 빵집 터는 여행', '2024-08-01', '2024-08-02', 3);
+(1, '제주도', '자바자바 MT 가보자고', '2024-06-01', '2024-06-04', '1'),
+(2, '서울', '', '2024-07-30', '2024-08-06', '1'),
+(3, '대전', '빵순이들의 빵집 터는 여행', '2024-08-01', '2024-08-02', '3');
 
 -- content 테이블에 더미 데이터 삽입
 INSERT INTO content (content_id, plan_id, dayNum, contentNum, memo, attraction_id) VALUES
@@ -41,12 +40,12 @@ INSERT INTO content (content_id, plan_id, dayNum, contentNum, memo, attraction_i
 (11, 3, 1, 2, '일단 밥부터 먹는다', NULL),
 (9, 3, 2, 1, '집에 간드아아ㅏ아악 가기 싫억', NULL);
 
-select * from attraction where attraction_id='1829744';
+select * from attraction;
 select * from member;
 select * from plan;
 select * from  content;
 
-delete from content where plan_id>=4;
-delete from plan where plan_id>=4;
+delete from content where plan_id between 28 and 42;
+delete from plan where plan_id between 28 and 42;
 
 commit;
